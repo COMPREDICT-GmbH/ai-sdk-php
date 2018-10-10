@@ -1,22 +1,15 @@
 <?php
-
 namespace CompredictAICore\Test;
 
-include "../src/CompredictAICore/Api/SingletonTrait.php";
-include "../src/CompredictAICore/Api/Error.php";
-include "../src/CompredictAICore/Api/ClientError.php";
-include "../src/CompredictAICore/Api/NetworkError.php";
-include "../src/CompredictAICore/Api/ServerError.php";
-include "../src/CompredictAICore/Api/Client.php";
-include "../src/CompredictAICore/Api/Request.php";
-include "../src/CompredictAICore/Api/Resource.php";
-include "../src/CompredictAICore/Api/Resources/Algorithm.php";
-include "../src/CompredictAICore/Api/Resources/Prediction.php";
-include "../src/CompredictAICore/Api/Resources/Task.php";
-include "../src/CompredictAICore/Api/Resources/Evaluation.php";
+include 'includer.php';
 
-$token = "10d342c2d46031f540442b72962a47613033642b";
-$callback_url = 'http://localhost/sdk/callback.php';
+$dotenv = new \Dotenv\Dotenv(__DIR__ . '\..');
+$dotenv->load();
+
+$token= getenv("COMPREDICT_AI_CORE_KEY", "");
+$user= getenv("COMPREDICT_AI_CORE_USER", "");
+$callback_url= getenv("COMPREDICT_AI_CORE_CALLBACK", null);
+$fail_on_error= getenv("COMPREDICT_AI_CORE_FAIL_ON_ERROR", true);
 
 $client = \CompredictAICore\Api\Client::getInstance($token, $callback_url);
 $client->failOnError(True);
@@ -30,8 +23,6 @@ if($prediction = $algo->predict(json_decode($test_data, true), $evaluate=false))
 } else {
     var_dump($client->getLastError());
 }
-
-
 
 //sleep(15);
 

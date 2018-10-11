@@ -27,7 +27,7 @@ class Client
     *
     * @var string
     **/
-    protected $baseURL = 'localhost:8800/api/';
+    protected $baseURL = '**to be set**';
     
     /**
     * API version

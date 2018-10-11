@@ -1,9 +1,9 @@
 <?php
 
-namespace CompredictAICore\Api\Resources;
+namespace Compredict\API\Resources;
 
-use CompredictAICore\Api\Client;
-use CompredictAICore\Api\Resource;
+use Compredict\API\Client;
+use Compredict\API\Resource;
 
 class Task extends Resource
 {

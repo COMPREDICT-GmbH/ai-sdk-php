@@ -1,14 +1,18 @@
 {
-    "name": "CompredictAICore/api",
+    "name": "compredict/ai-sdk",
     "type": "library",
-    "description": "Enables PHP applications to communicate with the Compredict AI Core API.",
-    "keywords": ["api", "http", "rest", "compredict", "AI"],
+    "description": "Enables PHP applications to communicate with Compredict's AI Core API.",
+    "keywords": ["api", "rest", "compredict", "AI", "sdk"],
     "homepage": "http://compredict.de",
     "license": "MIT",
-    "authors": [
+    "authors":[
         {
-            "name": "COMPREDICT",
-            "homepage": "http://www.compredict.de"
+            "name":"COMPREDICT GmbH",
+            "homepage":"https://compredict.de"
+        },
+        {
+            "name":"Ousama Esbel",
+            "email": "esbel@compredict.de"
         }
     ],
     "require": {
@@ -22,10 +26,10 @@
     },
     "autoload": {
         "psr-0": {
-            "CompredictAICore": "src/"
+            "Compredict": "src/"
         },
         "psr-4": {
-            "CompredictAICore\\Test\\": "test/"
+            "Compredict\\Test\\": "test/"
         }
     },
     "scripts": {

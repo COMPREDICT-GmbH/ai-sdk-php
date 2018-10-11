@@ -1,5 +1,5 @@
 <?php
-namespace CompredictAICore\Api;
+namespace Compredict\API;
 /**
  * Raised if a network fault occurs.
  */

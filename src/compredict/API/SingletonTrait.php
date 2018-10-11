@@ -1,6 +1,6 @@
 <?php
 
-namespace CompredictAICore\Api;
+namespace Compredict\API;
 
 use \Exception as Exception;
 

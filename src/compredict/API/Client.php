@@ -1,6 +1,6 @@
 <?php
 
-namespace CompredictAICore\Api;
+namespace Compredict\API;
 
 use \Exception as Exception;
 
@@ -111,7 +111,7 @@ class Client
             return $object;
 
         $baseResource = __NAMESPACE__ . '\\' . $resource;
-        $class = (class_exists($baseResource)) ? $baseResource : 'CompredictAICore\\Api\\Resources\\' . $resource;
+        $class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Resources\\' . $resource;
         return new $class($object);
     }
 
@@ -128,7 +128,7 @@ class Client
             return $object;
 
         $baseResource = __NAMESPACE__ . '\\' . $resource;
-        $resource_class = (class_exists($baseResource)) ? $baseResource : 'CompredictAICore\\Api\\Resources\\' . $resource;
+        $resource_class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Resources\\' . $resource;
         $array_of_resources = array();
         foreach($object as $res){
             array_push($array_of_resources, new $resource_class($object));

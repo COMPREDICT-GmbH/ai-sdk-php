@@ -1,5 +1,5 @@
 <?php
-namespace CompredictAICore\Test;
+namespace Compredict\Test;
 
 include 'includer.php';
 
@@ -11,7 +11,7 @@ $user= getenv("COMPREDICT_AI_CORE_USER", "");
 $callback_url= getenv("COMPREDICT_AI_CORE_CALLBACK", null);
 $fail_on_error= getenv("COMPREDICT_AI_CORE_FAIL_ON_ERROR", true);
 
-$client = \CompredictAICore\Api\Client::getInstance($token, $callback_url);
+$client = \Compredict\API\Client::getInstance($token, $callback_url);
 $client->failOnError(True);
 
 $test_data = file_get_contents("test_observer.json");

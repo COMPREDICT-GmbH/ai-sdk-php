@@ -10,7 +10,7 @@
 * @author Ousama Esbel
 */
 
-namespace CompredictAICore\Api;
+namespace Compredict\API;
 
 class Request {
 

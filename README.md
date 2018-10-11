@@ -98,10 +98,10 @@ $result = $algorithm->predict($X_test);
 
 Depending on the algorithm's computation requirement, the result can be:
 
-- Task: holds a job id of the task that the user can query later to get the results.
-- Prediction: contains the result of the algorithm + evaluation
+- **Task**: holds a job id of the task that the user can query later to get the results.
+- **Prediction**: contains the result of the algorithm + evaluation
 
-You can know identify when the algorithm dispatch the processing to queue 
+You can identify when the algorithm dispatches the processing to queue 
 or send the results instantly by:
 
 ~~~php

@@ -27,7 +27,7 @@ class Client
     *
     * @var string
     **/
-    protected $baseURL = '**to be set**';
+    protected $baseURL = '**TO BE SET**';
     
     /**
     * API version
@@ -43,7 +43,14 @@ class Client
     **/
     protected $callback_url;
 
-    private function __construct($token=null, $callback_url=null)
+    /**
+     * Private key to decrypt messages.
+     *
+     * @var Openssl RSA Resource
+     */
+    protected $ppk = false;
+
+    private function __construct($token=null, $callback_url=null, $ppk=null, $passphrase="")
     {
         if(!isset($token) || strlen($token) !== 40)
             throw new Exception("A 40 character API Key must be provided");
@@ -55,6 +62,9 @@ class Client
         $this->http = new Request($this->baseURL . $this->APIVersion);
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
+        if(!is_null($ppk)){
+            $this->setPrivateKey($ppk, $passphrase);
+        }
     }
 
     /**
@@ -96,6 +106,28 @@ class Client
     public function getLastError()
     {
         return $this->http->getLastError();
+    }
+
+    /**
+     * @param  Boolean option to enable/disable SSL.
+     */
+    public function verifyPeer($option)
+    {
+        return $this->http->verifyPeer($option);
+    }
+
+    /**
+     * Function to set the Private key that will be used to decrypt the messages.
+     * 
+     * @param string $keyPath path to the key .ppm file.
+     * @param string $passphrase for the given key.
+     */
+    public function setPrivateKey($keyPath, $passphrase="")
+    {
+        $fp = fopen($keyPath, 'r');
+        $ppk_str = fread($fp, 8192);
+        fclose($fp);
+        $this->ppk = openssl_pkey_get_private($ppk_str, $passphrase);
     }
 
     /**
@@ -141,7 +173,8 @@ class Client
      *
      * @return mixed array|string list of algorithms.
      */
-    public function getAlgorithms(){
+    public function getAlgorithms()
+    {
         $response = $this->http->GET('/algorithms');
         return $this->mapCollection('Algorithm', $response);
     }
@@ -152,7 +185,8 @@ class Client
      * @param String $algorithm_id.
      * @return Resource/Algorithm object.
      */
-    public function getAlgorithm($algorithm_id){
+    public function getAlgorithm($algorithm_id)
+    {
         $response = $this->http->GET("/algorithms/{$algorithm_id}");
         return $this->mapResource('Algorithm', $response);
     }
@@ -163,7 +197,8 @@ class Client
      * @param String $task_id
      * @return Resource/Algorithm object.
      */
-    public function getTaskResult($task_id){
+    public function getTaskResult($task_id)
+    {
         $response = $this->http->GET("/algorithms/tasks/{$task_id}");
         return $this->mapResource('Task', $response);
     }
@@ -176,11 +211,14 @@ class Client
      * @param Boolean $evaluate whether to apply standard evaluation or not.
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
-    public function getPrediction($algorithm_id, $data, $evaluate=True){
-        $request_data = ['features' => $data, 'evaluate' => $evaluate];
+    public function getPrediction($algorithm_id, $data, $evaluate=True, $encrypt=False)
+    {
+        $requset_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+        $request_data = ['evaluate' => $evaluate, 'encrypt' => $encrypt];
         if(!is_null($this->callback_url))
             $request_data['callback_url'] = $this->callback_url;
-        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", json_encode($request_data));
+
+        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files);
         // need to check if prediction or task.
         $resource = (isset($response->predictions)) ? 'Prediction' : 'Task';
         return $this->mapResource($resource, $response);
@@ -191,7 +229,8 @@ class Client
      *
      * @param String $algorithm_id
      */
-    public function getTemplate($algorithm_id){
+    public function getTemplate($algorithm_id)
+    {
         $response = $this->http->GET("/algorithms/{$algorithm_id}/template");
         # to download the file.
         header("Content-type: text/csv");
@@ -199,6 +238,36 @@ class Client
         header("Pragma: no-cache");
         header("Expires: 0");
         echo $response;
+    }
+
+    /**
+     * @param  base64_encoded string holds the encrypted message.
+     * @param  integer Chunking by bytes to feed to the decryptor algorithm.
+     * @return String decrypted message.
+     */
+    public function RSADecrypt($encrypted_msg, $chunk_size=256)
+    {
+        if(is_null($this->ppk))
+            throw new Exception("Returned message is encrypted while you did not provide private key!");
+        $encrypted_msg = base64_decode($encrypted_msg);
+
+        $offset = 0;
+        $chunk_size = 256;
+
+        $decrypted = "";
+        while($offset < strlen($encrypted_msg)){
+            $decrypted_chunk = "";
+            $chunk = substr($encrypted_msg, $offset, $chunk_size);
+
+            if(openssl_private_decrypt($chunk, $decrypted_chunk, $this->ppk, OPENSSL_PKCS1_OAEP_PADDING))
+                $decrypted .= $decrypted_chunk;
+            else {
+                var_dump($decrypted);
+                throw new exception("Problem decrypting the message.");
+            }
+            $offset += $chunk_size;
+        }
+        return $decrypted;
     }
 
 }

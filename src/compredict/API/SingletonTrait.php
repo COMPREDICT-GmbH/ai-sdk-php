@@ -13,11 +13,11 @@ trait SingletonTrait {
   /**
    * call this method to get instance
    **/
-  public static function getInstance($token=null, $callback_url=null){
+  public static function getInstance($token=null, $callback_url=null, $ppk=null, $passphrase=""){
     if (static::$inst === null){
      if($token == null)
       throw new Exception("Token must be provided");
-    static::$inst = new static($token, $callback_url);
+    static::$inst = new static($token, $callback_url, $ppk, $passphrase);
     }
     return static::$inst;
   }

@@ -1,34 +1,51 @@
 <?php
 namespace Compredict\Test;
+include 'autoloader.php';
 
-include 'includer.php';
+use \Compredict\Api\Resources\Task as Task;
+use \Compredict\Api\Client as Compredict;
+use \Dotenv\Dotenv;
 
-$dotenv = new \Dotenv\Dotenv(__DIR__ . '\..');
+
+// load the settings
+$dotenv = new Dotenv(__DIR__ . '\..');
 $dotenv->load();
 
 $token= getenv("COMPREDICT_AI_CORE_KEY", "");
 $user= getenv("COMPREDICT_AI_CORE_USER", "");
 $callback_url= getenv("COMPREDICT_AI_CORE_CALLBACK", null);
 $fail_on_error= getenv("COMPREDICT_AI_CORE_FAIL_ON_ERROR", true);
+$ppk_path= getenv("COMPREDICT_AI_CORE_PPK", null);
+$passphrase= getenv("COMPREDICT_AI_CORE_PASSPHRASE", "");
 
-$client = \Compredict\API\Client::getInstance($token, $callback_url);
-$client->failOnError(True);
 
+// Create compredict client and set the necessary options.
+$client = Compredict::getInstance($token, $callback_url, $ppk_path, $passphrase);
+$client->failOnError(false);
+
+
+// Calling an algorithm and test it.
 $test_data = file_get_contents("test_observer.json");
 
 $algo = $client->getAlgorithm('observer');
 
-if($prediction = $algo->predict(json_decode($test_data, true), $evaluate=false)){
-    var_dump($prediction);
+if($algo == False){
+    var_dump($client->getLastError());
+    die();
+}
+
+if($results = $algo->predict(json_decode($test_data, true), $evaluate=false, $encrypt=true)){
+    var_dump($results);
+    if($results instanceof Task){
+        echo "It is a task<br>";
+        while($results->getCurrentStatus() != Task::STATUS_FINISHED){
+            sleep(3);
+            $results->update();
+            echo "Checking for update... the new status is: " . $results->getCurrentStatus() . '<br>';
+        }
+    }
+    var_dump($results->predictions);
 } else {
     var_dump($client->getLastError());
 }
 
-//sleep(15);
-
-// if($algo->last_result instanceof \CompredictAICore\Api\Resources\Task){
-//     echo "It is a task indeed";
-//     $task = $algo->last_result;
-//     $task->getLatestUpdate();
-//     var_dump($task->predictions);
-// }

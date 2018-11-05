@@ -52,7 +52,9 @@ for connecting to a store on the Bigcommerce platform:
 ~~~php
 $compredict_client = Compredict::getInstance(
     'Your-token',
-    'Your-callback-url',
+    'Your-callback-url',  //optional
+    'path-to-ppk',  //optional
+    'passphrase-of-the-ppk'  //optional
 );
 ~~~
 
@@ -115,13 +117,46 @@ $result = $algorithm->predict(X_test, evaluate=True);
 
 if($result instanceof Compredict\API\Resources\Task){
     echo $result->getCurrentStatus();
-    // wait some time
-    echo $result->getLatestUpdate(); // check Compredict for the results.
+    while($result->getCurrentStatus() != Compredict\API\Resources\Task::STATUS_FINISHED){
+        sleep("10"); # wait some time.
+        $result->update(); // check Compredict for updated results.
+    }
+    echo $result->success;
+    var_dump($result->predictions);
 }
 ~~~
 
 If you set up ``callback_url`` then the results will be POSTed automatically to you once the
 calculation is finished.
+
+
+Data Privacy
+------------
+
+When the calculation is queued in COMPREDICT, the result of the calculations will be stored temporarily for three days. If the data is private and there are organizational issues in keeping this data stored in COMPREDICT, then you can encrypt the data using RSA. COMPREDICT allow user's to add RSA public key in the Dashboard. Then, COMPREDICT will use the public key to encrypt the stored results. In return, The SDK will use the provided private key to decrypt the returned results.
+
+COMPREDICT will only encrypt the results when:
+
+- The user provide a public key in the dashboard.
+- Specify **encrypt** parameter in the predict function as True.
+
+Here is an example:
+~~~php
+// First, you should provide public key in COMPREDICT's dashboard.
+
+// Second, Call predict and set encrypt as True
+$result = $algorithm->predict(X_test, evaluate=True, encrypt=True);
+
+if($result instanceof Compredict\API\Resources\Task){
+    echo $result->getCurrentStatus();
+    while($result->getCurrentStatus() != Compredict\API\Resources\Task::STATUS_FINISHED){
+        sleep("10"); # wait some time.
+        $result->update(); // check Compredict for updated results.
+    }
+    echo $result->is_encrypted;  // will return True
+}
+~~~
+
 
 Handling Errors And Timeouts
 ----------------------------

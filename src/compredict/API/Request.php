@@ -115,6 +115,12 @@ class Request {
     **/
     private $failOnError = false;
 
+    /**
+     * The headers required for request
+     * @var array
+     */
+    private $headers = array();
+
 
     /**
     * Called when the Request object is created.
@@ -185,17 +191,10 @@ class Request {
     }
 
     /**
-    * Enable SSL.
-    */
-    public function enableSSL() {
-        $this->ssl = TRUE;
-    }
-
-    /**
-    * Disable SSL.
-    */
-    public function disableSSL() {
-        $this->ssl = FALSE;
+     * @param  Boolean option to enable/disable ssl
+     */
+    public function verifyPeer($option){
+        $this->ssl = $option
     }
 
     /**
@@ -252,10 +251,38 @@ class Request {
     * Set the POST fields (only used if $this->requestType is 'POST').
     *
     * @param array $fields
+    * @param array|null $files
     *   An array of fields that will be sent with the POST request.
     */
-    public function setPostFields($fields = array()) {
-        $this->postFields = $fields;
+    public function setPostFields($fields = array(), $files = null) {
+        if(is_null($files))
+        {
+            array_push($this->headers, 'Content-Type: application/json');
+            $this->postFields = $fields;
+        }
+        else
+        {
+            $delimiter = '-------------' . uniqid();
+            $data = '';
+
+            foreach ($fields as $name => $content) {
+                $data .= "--" . $delimiter . "\r\n"
+                    . 'Content-Disposition: form-data; name="' . $name . "\"\r\n\r\n"
+                    . $content . "\r\n";
+            }
+
+            foreach ($files as $name => $content) {
+                $data .= "--" . $delimiter . "\r\n"
+                    . 'Content-Disposition: form-data; name="' . $name . '"; filename="' . $content['fileName'] . '"' . "\r\n\r\n"
+                    . $content['fileContent'] . "\r\n";
+            }
+
+            $data .= "--" . $delimiter . "--\r\n";
+            array_push($this->headers, 'Content-Type: multipart/form-data; boundary=' . $delimiter);
+            array_push($this->headers, 'Content-Length: ' . strlen($data));
+            $this->postFields = $data;
+        }   
+        
     }
 
     /**
@@ -336,12 +363,13 @@ class Request {
     *  
     * @param string $endpoint completes the url.
     * @param string $data json encoded.
+    * @param array|null $files
     * @return std class|false the result from the endpoint
     **/
-    public function POST($endpoint, $data){
+    public function POST($endpoint, $data, $files=null){
         $address = $this->url  . $endpoint;
         $this->setRequestType(Request::POST);
-        $this->setPostFields($data);
+        $this->setPostFields($data, $files);
         return $this->execute($address);
     }
 
@@ -370,12 +398,11 @@ class Request {
         // Set up cURL options.
         $this->ch = curl_init();
         // If there are basic authentication credentials, use them.
-        $headers = array('Content-Type: application/json');
         if (isset($this->token)) {
-            array_push($headers, 'Authorization: Token ' . $this->token);
+            array_push($this->headers, 'Authorization: Token ' . $this->token);
         }
 
-        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
         // If cookies are enabled, use them.
         if ($this->cookiesEnabled) {
             curl_setopt($this->ch, CURLOPT_COOKIEJAR, $this->cookiePath);

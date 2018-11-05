@@ -4,6 +4,7 @@ namespace Compredict\API;
 
 class Resource
 {
+
     /**
      * @var \stdClass
      */

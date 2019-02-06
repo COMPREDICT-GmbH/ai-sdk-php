@@ -194,7 +194,7 @@ class Request {
      * @param  Boolean option to enable/disable ssl
      */
     public function verifyPeer($option){
-        $this->ssl = $option
+        $this->ssl = $option;
     }
 
     /**
@@ -438,7 +438,7 @@ class Request {
 
         // Set the header, response, error and http code.
         $this->responseHeader = substr($response, 0, $header_size);
-        if (strpos($address, '/template') === false)
+        if (strpos($address, '/template') === false && strpos($address, '/graph') === false)
             $this->responseBody = json_decode(substr($response, $header_size));
         else
             $this->responseBody = substr($response, $header_size);

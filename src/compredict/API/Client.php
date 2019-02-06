@@ -27,7 +27,8 @@ class Client
     *
     * @var string
     **/
-    protected $baseURL = '**TO BE SET**';
+    //protected $baseURL = '**TO BE SET**';
+    protected $baseURL = 'localhost:8800/api/';
     
     /**
     * API version
@@ -232,12 +233,36 @@ class Client
     public function getTemplate($algorithm_id)
     {
         $response = $this->http->GET("/algorithms/{$algorithm_id}/template");
-        # to download the file.
-        header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename=template.csv");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        echo $response;
+        if($this->http->getHttpCode() == 200){
+            // to download the file.
+            header("Content-type: text/csv");
+            header("Content-Disposition: attachment; filename={$algorithm_id}-template.csv");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+            echo $response;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Downloads the detailed input graph of the algorithm.
+     *
+     * @param String $algorithm_id
+     */
+    public function getGraph($algorithm_id)
+    {
+        $response = $this->http->GET("/algorithms/{$algorithm_id}/graph");
+        if($this->http->getHttpCode() == 200){
+            // to download the file.
+            header("Content-type: image/png");
+            header("Content-Disposition: attachment; filename={$algorithm_id}-graph.png");
+            header("Pragma: no-cache");
+            header("Expires: 0");    
+            echo $response;
+            return true;
+        }
+        return false;
     }
 
     /**

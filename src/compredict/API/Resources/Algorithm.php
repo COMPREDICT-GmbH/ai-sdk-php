@@ -25,6 +25,11 @@ class Algorithm extends Resource
         $this->client->getTemplate($this->id);
     }
 
+    public function getDetailedGraph()
+    {
+        $this->client->getGraph($this->id);
+    }
+
     public function getResponseTime()
     {
         return $this->result;

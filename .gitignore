@@ -8,3 +8,4 @@ script/*
 /build
 /test/reports
 .env
+*.json

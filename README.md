@@ -46,7 +46,7 @@ To use the API client in your PHP code, ensure that you can access `Compredict\A
 in your autoload path (using Composer’s `vendor/autoload.php` hook is recommended).
 
 Provide your credentials to the static configuration hook to prepare the API client
-for connecting to a store on the Bigcommerce platform:
+for connecting to a store on the COMPREDICT platform:
 
 ### Basic Auth
 ~~~php
@@ -129,6 +129,24 @@ if($result instanceof Compredict\API\Resources\Task){
 If you set up ``callback_url`` then the results will be POSTed automatically to you once the
 calculation is finished.
 
+
+Each algorithm has its own evaluation methods that are used to evaluate the performance of the algorithm given the data. You can identify the evaluation metric
+by calling:
+
+~~~
+$algorithm->evaluations;  // associative array.
+~~~
+
+When running the algorithm, with `evaluate = True`, then the algorithm will be evaluated by the default parameters. In order to tweek these parameters, you have to specify an associative array with the modified parameters. For example:
+
+~~~
+$evaluate = [];
+$evaluate['rainflow-counting'] = [];  // name of the evaluation method
+$evaluate['rainflow-counting']["hysteresis"] = 0.2;  // evaluation method parameter 1
+$evaluate['rainflow-counting']["N"] = 0.2;  // evaluation method parameter 2
+
+$result = $algorithm->predict(X_test, evaluate=$evaluate);
+~~~
 
 Data Privacy
 ------------

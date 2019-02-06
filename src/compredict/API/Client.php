@@ -215,14 +215,26 @@ class Client
     public function getPrediction($algorithm_id, $data, $evaluate=True, $encrypt=False)
     {
         $requset_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
-        $request_data = ['evaluate' => $evaluate, 'encrypt' => $encrypt];
+        $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt];
         if(!is_null($this->callback_url))
             $request_data['callback_url'] = $this->callback_url;
-
         $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files);
         // need to check if prediction or task.
         $resource = (isset($response->predictions)) ? 'Prediction' : 'Task';
         return $this->mapResource($resource, $response);
+    }
+
+    /**
+     * Convert the evaluate parameter to the correct format before sending the request.
+     *         
+     * @param  bool|array|string $evaluate parameter
+     * @return bool|string
+     */
+    protected function _process_evaluate($evaluate)
+    {
+        if(is_array($evaluate))
+            return json_encode($evaluate);
+        return $evaluate;
     }
 
     /**

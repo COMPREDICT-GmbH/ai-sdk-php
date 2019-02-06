@@ -34,7 +34,12 @@ if($algo == False){
     die();
 }
 
-if($results = $algo->predict(json_decode($test_data, true), $evaluate=false, $encrypt=true)){
+$evaluate = [];
+$evaluate['rainflow-counting'] = [];
+$evaluate['rainflow-counting']["hysteresis"] = 0.2;
+$evaluate['rainflow-counting']["N"] = 0.2;
+
+if($results = $algo->predict(json_decode($test_data, true), $evaluate=$evaluate, $encrypt=true)){
     var_dump($results);
     if($results instanceof Task){
         echo "It is a task<br>";

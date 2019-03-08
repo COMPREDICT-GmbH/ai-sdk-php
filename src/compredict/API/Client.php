@@ -241,14 +241,15 @@ class Client
      * Downloads the detailed file.
      *
      * @param String $algorithm_id
+     * @param String $type describes the file type whether `input` or `output`
      */
-    public function getTemplate($algorithm_id)
+    public function getTemplate($algorithm_id, $type='input')
     {
-        $response = $this->http->GET("/algorithms/{$algorithm_id}/template");
+        $response = $this->http->GET("/algorithms/{$algorithm_id}/template?type={$type}");
         if($this->http->getHttpCode() == 200){
             // to download the file.
-            header("Content-type: text/csv");
-            header("Content-Disposition: attachment; filename={$algorithm_id}-template.csv");
+            header("Content-type: application/json");
+            header("Content-Disposition: attachment; filename={$algorithm_id}-{$type}-template.json");
             header("Pragma: no-cache");
             header("Expires: 0");
             echo $response;
@@ -261,10 +262,11 @@ class Client
      * Downloads the detailed input graph of the algorithm.
      *
      * @param String $algorithm_id
+     * @param String $type describes the file type whether `input` or `output`
      */
-    public function getGraph($algorithm_id)
+    public function getGraph($algorithm_id, $type='input')
     {
-        $response = $this->http->GET("/algorithms/{$algorithm_id}/graph");
+        $response = $this->http->GET("/algorithms/{$algorithm_id}/graph?type={$type}");
         if($this->http->getHttpCode() == 200){
             // to download the file.
             header("Content-type: image/png");

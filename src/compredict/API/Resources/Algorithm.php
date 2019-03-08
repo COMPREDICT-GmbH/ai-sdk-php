@@ -20,14 +20,14 @@ class Algorithm extends Resource
         return $this->last_result;
     }
 
-    public function getDetailedTemplate()
+    public function getDetailedTemplate($type='input')
     {
-        $this->client->getTemplate($this->id);
+        $this->client->getTemplate($this->id, $type);
     }
 
-    public function getDetailedGraph()
+    public function getDetailedGraph($type='input')
     {
-        $this->client->getGraph($this->id);
+        $this->client->getGraph($this->id, $type);
     }
 
     public function getResponseTime()
@@ -35,9 +35,9 @@ class Algorithm extends Resource
         return $this->result;
     }
 
-    public function getTemplate()
+    public function getTemplate($type='input')
     {
-        return $this->features_format;
+        return ($type=='output') ? $this->output_format : $this->features_format;
     }
 
     public function getLastPredictions()

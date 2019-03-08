@@ -2,10 +2,10 @@ vendor
 composer.lock
 *.sh
 script/*
+*.json
 
 # Testing
 /phpunit.xml
 /build
 /test/reports
 .env
-*.json

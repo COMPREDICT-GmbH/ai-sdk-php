@@ -1,6 +1,6 @@
 <?php
 
-namespace Compredict\API;
+namespace Compredict\API\Algorithms;
 
 class Resource
 {
@@ -11,10 +11,9 @@ class Resource
     protected $fields;
 
     /**
-    * @var \CompredictAICore\Api\Client
-    */
+     * @var \CompredictAICore\Api\Client
+     */
     protected $client;
-
 
     public function __construct($object = false)
     {
@@ -38,10 +37,12 @@ class Resource
 
     public function __set($field, $value)
     {
-        if($field == 'fields')
+        if ($field == 'fields') {
             $this->fields = $value;
-        else
+        } else {
             $this->fields->$field = $value;
+        }
+
     }
 
     public function __isset($field)

@@ -36,7 +36,7 @@ All the examples below assume the `Compredict\API\Client` class is imported
 into the scope with the following namespace declaration:
 
 ~~~php
-use Compredict\API\Client as Compredict;
+use Compredict\API\Algorithms\Client as Compredict;
 ~~~
 
 Configuration
@@ -115,9 +115,9 @@ or dynamically:
 ~~~php
 $result = $algorithm->predict(X_test, evaluate=True);
 
-if($result instanceof Compredict\API\Resources\Task){
+if($result instanceof Compredict\API\Algorithms\Resources\Task){
     echo $result->getCurrentStatus();
-    while($result->getCurrentStatus() != Compredict\API\Resources\Task::STATUS_FINISHED){
+    while($result->getCurrentStatus() != Compredict\API\Algorithms\Resources\Task::STATUS_FINISHED){
         sleep("10"); # wait some time.
         $result->update(); // check Compredict for updated results.
     }
@@ -165,9 +165,9 @@ Here is an example:
 // Second, Call predict and set encrypt as True
 $result = $algorithm->predict(X_test, evaluate=True, encrypt=True);
 
-if($result instanceof Compredict\API\Resources\Task){
+if($result instanceof Compredict\API\Algorithms\Resources\Task){
     echo $result->getCurrentStatus();
-    while($result->getCurrentStatus() != Compredict\API\Resources\Task::STATUS_FINISHED){
+    while($result->getCurrentStatus() != Compredict\API\Algorithms\Resources\Task::STATUS_FINISHED){
         sleep("10"); # wait some time.
         $result->update(); // check Compredict for updated results.
     }
@@ -214,7 +214,7 @@ $compredict_client->failOnError();
 try {
     $orders = $compredict_client->getAlgorithms();
 
-} catch(Compredict\API\Error $error) {
+} catch(Compredict\API\Algorithms\Error $error) {
     echo $error->getCode();
     echo $error->getMessage();
 }

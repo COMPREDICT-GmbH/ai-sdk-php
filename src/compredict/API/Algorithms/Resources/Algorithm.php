@@ -1,9 +1,9 @@
 <?php
 
-namespace Compredict\API\Resources;
+namespace Compredict\API\Algorithms\Resources;
 
-use Compredict\API\Client;
-use Compredict\API\Resource;
+use Compredict\API\Algorithms\Client;
+use Compredict\API\Algorithms\Resource;
 
 class Algorithm extends Resource
 {
@@ -14,18 +14,18 @@ class Algorithm extends Resource
         $this->last_result = null;
     }
 
-    public function predict($data, $evaluate=true, $encrypt=false)
+    public function predict($data, $evaluate = true, $encrypt = false)
     {
         $this->last_result = $this->client->getPrediction($this->id, $data, $evaluate, $encrypt);
         return $this->last_result;
     }
 
-    public function getDetailedTemplate($type='input')
+    public function getDetailedTemplate($type = 'input')
     {
         $this->client->getTemplate($this->id, $type);
     }
 
-    public function getDetailedGraph($type='input')
+    public function getDetailedGraph($type = 'input')
     {
         $this->client->getGraph($this->id, $type);
     }
@@ -35,9 +35,9 @@ class Algorithm extends Resource
         return $this->result;
     }
 
-    public function getTemplate($type='input')
+    public function getTemplate($type = 'input')
     {
-        return ($type=='output') ? $this->output_format : $this->features_format;
+        return ($type == 'output') ? $this->output_format : $this->features_format;
     }
 
     public function getLastPredictions()

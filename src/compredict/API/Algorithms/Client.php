@@ -1,6 +1,6 @@
 <?php
 
-namespace Compredict\API;
+namespace Compredict\API\Algorithms;
 
 use \Exception as Exception;
 
@@ -148,7 +148,7 @@ class Client
         }
 
         $baseResource = __NAMESPACE__ . '\\' . $resource;
-        $class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Resources\\' . $resource;
+        $class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Algorithms\\Resources\\' . $resource;
         return new $class($object);
     }
 
@@ -166,7 +166,7 @@ class Client
         }
 
         $baseResource = __NAMESPACE__ . '\\' . $resource;
-        $resource_class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Resources\\' . $resource;
+        $resource_class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Algorithms\\Resources\\' . $resource;
         $array_of_resources = array();
         foreach ($object as $res) {
             array_push($array_of_resources, new $resource_class($object));
@@ -227,7 +227,7 @@ class Client
 
         $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files);
         // need to check if prediction or task.
-        $resource = (isset($response->predictions)) ? 'Prediction' : 'Task';
+        $resource = (isset($response->results)) ? 'Prediction' : 'Task';
         return $this->mapResource($resource, $response);
     }
 

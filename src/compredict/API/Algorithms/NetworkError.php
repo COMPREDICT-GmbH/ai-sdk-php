@@ -1,5 +1,6 @@
 <?php
-namespace Compredict\API;
+namespace Compredict\API\Algorithms;
+
 /**
  * Raised if a network fault occurs.
  */

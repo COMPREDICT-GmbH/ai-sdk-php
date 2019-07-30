@@ -1,16 +1,16 @@
 <?php
 
-namespace Compredict\API\Resources;
+namespace Compredict\API\Algorithms\Resources;
 
-use Compredict\API\Client;
-use Compredict\API\Resource;
+use Compredict\API\Algorithms\Client;
+use Compredict\API\Algorithms\Resource;
 
 class Task extends Resource
 {
 
-    CONST STATUS_PENDING = "Pending";
-    CONST STATUS_PROGRESS = "In Progress";
-    CONST STATUS_FINISHED = "Finished";
+    const STATUS_PENDING = "Pending";
+    const STATUS_PROGRESS = "In Progress";
+    const STATUS_FINISHED = "Finished";
 
     public function __construct($object = false)
     {
@@ -22,21 +22,24 @@ class Task extends Resource
         $this->setResults($this->predictions, $this->evaluations);
     }
 
-    public function update(){
+    public function update()
+    {
         $task = $this->client->getTaskResult($this->job_id);
         $this->fields = $task->fields;
         return $this;
     }
 
-    public function getCurrentStatus(){
+    public function getCurrentStatus()
+    {
         return $this->status;
     }
 
-    protected function setResults($predictions, $evaluations){
+    protected function setResults($predictions, $evaluations)
+    {
         $this->predictions = null;
         $this->evaluations = null;
-        if($this->status == self::STATUS_FINISHED && $this->success){
-            if($this->is_encrypted){
+        if ($this->status == self::STATUS_FINISHED && $this->success) {
+            if ($this->is_encrypted) {
                 $this->predictions = $this->client->RSADecrypt($predictions);
                 $this->evaluations = $this->client->RSADecrypt($evaluations);
             } else {

@@ -1,21 +1,22 @@
 <?php
 
 /**
-* The Request class provides a simple HTTP request interface.
-*
-*
-* Minimum requirements: PHP 5.3.x, cURL.
-*
-* @version 1.0
-* @author Ousama Esbel
-*/
+ * The Request class provides a simple HTTP request interface.
+ *
+ *
+ * Minimum requirements: PHP 5.3.x, cURL.
+ *
+ * @version 1.0
+ * @author Ousama Esbel
+ */
 
-namespace Compredict\API;
+namespace Compredict\API\Algorithms;
 
-class Request {
+class Request
+{
 
     const POST = 'POST';
-    const GET  = 'GET';
+    const GET = 'GET';
 
     // You can set the address when creating the Request object, or using the
 
@@ -25,94 +26,94 @@ class Request {
     public $timeout = 15;
 
     // Variables used for cookie support.
-    private $cookiesEnabled = FALSE;
+    private $cookiesEnabled = false;
     private $cookiePath;
 
     // Enable or disable SSL/TLS.
-    private $ssl = FALSE;
+    private $ssl = false;
 
     /**
-    * Request type.
-    *
-    * @var string
-    **/
+     * Request type.
+     *
+     * @var string
+     **/
     private $requestType;
-    
+
     /**
-    * The data in json format.
-    *
-    * @var string
-    **/
+     * The data in json format.
+     *
+     * @var string
+     **/
     private $postFields;
 
     /**
-    * API token for authorization.
-    *
-    * @var string
-    **/
+     * API token for authorization.
+     *
+     * @var string
+     **/
     private $token;
 
     /**
-    * Latency in ms.
-    *
-    * @var int
-    **/
+     * Latency in ms.
+     *
+     * @var int
+     **/
     private $latency;
-    
+
     /**
-    * Response body.
-    *
-    * @var std class
-    **/
+     * Response body.
+     *
+     * @var std class
+     **/
     private $responseBody;
-    
+
     /**
-    * Response header
-    *
-    * @var array
-    **/
+     * Response header
+     *
+     * @var array
+     **/
     private $responseHeader;
-    
+
     /**
-    * http status code.
-    *
-    * @var int
-    **/
+     * http status code.
+     *
+     * @var int
+     **/
     private $httpCode;
-    
+
     /**
-    * Curl error.
-    *
-    * @var string
-    **/
+     * Curl error.
+     *
+     * @var string
+     **/
     private $error;
-    
+
     /**
-    * Base url to the server.
-    *
-    * @var string
-    **/
+     * Base url to the server.
+     *
+     * @var string
+     **/
     private $url;
-    
+
     /**
-    * Curl isntance.
-    *
-    * @var curl
-    **/
+     * Curl isntance.
+     *
+     * @var curl
+     **/
     private $ch;
-    
+
     /**
-    * Last error from the server.
-    *
-    * @var Std class
-    **/
+     * Last error from the server.
+     *
+     * @var Std class
+     **/
     private $lastError;
-     
+
     /**
-    * Determine whether to throw error or store the error in $lastError.
-    *
-    * @var boolean
-    **/
+     * Determine whether to throw error or store the error in $lastError.
+     *
+     * @var boolean
+     **/
     private $failOnError = false;
 
     /**
@@ -121,24 +122,25 @@ class Request {
      */
     private $headers = array();
 
-
     /**
-    * Called when the Request object is created.
-    */
-    public function __construct($url) {
+     * Called when the Request object is created.
+     */
+    public function __construct($url)
+    {
         $this->url = $url;
         $this->lastError = false;
     }
 
     /**
-    * Set the username and password for HTTP basic authentication.
-    *
-    * @param string $username
-    *   Username for basic authentication.
-    * @param string $password
-    *   Password for basic authentication.
-    */
-    public function setToken($token) {
+     * Set the username and password for HTTP basic authentication.
+     *
+     * @param string $username
+     *   Username for basic authentication.
+     * @param string $password
+     *   Password for basic authentication.
+     */
+    public function setToken($token)
+    {
         $this->token = $token;
     }
 
@@ -172,96 +174,102 @@ class Request {
     }
 
     /**
-    * Enable cookies.
-    *
-    * @param string $cookie_path
-    *   Absolute path to a txt file where cookie information will be stored.
-    */
-    public function enableCookies($cookie_path) {
-        $this->cookiesEnabled = TRUE;
+     * Enable cookies.
+     *
+     * @param string $cookie_path
+     *   Absolute path to a txt file where cookie information will be stored.
+     */
+    public function enableCookies($cookie_path)
+    {
+        $this->cookiesEnabled = true;
         $this->cookiePath = $cookie_path;
     }
 
     /**
-    * Disable cookies.
-    */
-    public function disableCookies() {
-        $this->cookiesEnabled = FALSE;
+     * Disable cookies.
+     */
+    public function disableCookies()
+    {
+        $this->cookiesEnabled = false;
         $this->cookiePath = '';
     }
 
     /**
      * @param  Boolean option to enable/disable ssl
      */
-    public function verifyPeer($option){
+    public function verifyPeer($option)
+    {
         $this->ssl = $option;
     }
 
     /**
-    * Set timeout.
-    *
-    * @param int $timeout
-    *   Timeout value in seconds.
-    */
-    public function setTimeout($timeout = 15) {
+     * Set timeout.
+     *
+     * @param int $timeout
+     *   Timeout value in seconds.
+     */
+    public function setTimeout($timeout = 15)
+    {
         $this->timeout = $timeout;
     }
 
     /**
-    * Get timeout.
-    *
-    * @return int
-    *   Timeout value in seconds.
-    */
-    public function getTimeout() {
+     * Get timeout.
+     *
+     * @return int
+     *   Timeout value in seconds.
+     */
+    public function getTimeout()
+    {
         return $this->timeout;
     }
 
     /**
-    * Set connect timeout.
-    *
-    * @param int $connect_timeout
-    *   Timeout value in seconds.
-    */
-    public function setConnectTimeout($connectTimeout = 10) {
+     * Set connect timeout.
+     *
+     * @param int $connect_timeout
+     *   Timeout value in seconds.
+     */
+    public function setConnectTimeout($connectTimeout = 10)
+    {
         $this->connectTimeout = $connectTimeout;
     }
 
     /**
-    * Get connect timeout.
-    *
-    * @return int
-    *   Timeout value in seconds.
-    */
-    public function getConnectTimeout() {
+     * Get connect timeout.
+     *
+     * @return int
+     *   Timeout value in seconds.
+     */
+    public function getConnectTimeout()
+    {
         return $this->connectTimeout;
     }
 
     /**
-    * Set a request type (by default, cURL will send a GET request).
-    *
-    * @param string $type
-    *   GET, POST, DELETE, PUT, etc. Any standard request type will work.
-    */
-    public function setRequestType($type) {
+     * Set a request type (by default, cURL will send a GET request).
+     *
+     * @param string $type
+     *   GET, POST, DELETE, PUT, etc. Any standard request type will work.
+     */
+    public function setRequestType($type)
+    {
         $this->requestType = $type;
     }
 
     /**
-    * Set the POST fields (only used if $this->requestType is 'POST').
-    *
-    * @param array $fields
-    * @param array|null $files
-    *   An array of fields that will be sent with the POST request.
-    */
-    public function setPostFields($fields = array(), $files = null) {
-        if(is_null($files))
-        {
+     * Set the POST fields (only used if $this->requestType is 'POST').
+     *
+     * @param array $fields
+     * @param array|null $files
+     *   An array of fields that will be sent with the POST request.
+     */
+    public function setPostFields($fields = array(), $files = null)
+    {
+        if (is_null($files)) {
             array_push($this->headers, 'Content-Type: application/json');
             $this->postFields = $fields;
-        }
-        else
-        {
+        } else {
             $delimiter = '-------------' . uniqid();
             $data = '';
 
@@ -281,117 +289,126 @@ class Request {
             array_push($this->headers, 'Content-Type: multipart/form-data; boundary=' . $delimiter);
             array_push($this->headers, 'Content-Length: ' . strlen($data));
             $this->postFields = $data;
-        }   
-        
+        }
+
     }
 
     /**
-    * Get the response body.
-    *
-    * @return string
-    *   Response body.
-    */
-    public function getResponse() {
+     * Get the response body.
+     *
+     * @return string
+     *   Response body.
+     */
+    public function getResponse()
+    {
         return $this->responseBody;
     }
 
     /**
-    * Get the response header.
-    *
-    * @return string
-    *   Response header.
-    */
-    public function getHeader() {
+     * Get the response header.
+     *
+     * @return string
+     *   Response header.
+     */
+    public function getHeader()
+    {
         return $this->responseHeader;
     }
 
     /**
-    * Get the HTTP status code for the response.
-    *
-    * @return int
-    *   HTTP status code.
-    *
-    * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-    */
-    public function getHttpCode() {
+     * Get the HTTP status code for the response.
+     *
+     * @return int
+     *   HTTP status code.
+     *
+     * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+     */
+    public function getHttpCode()
+    {
         return $this->httpCode;
     }
 
     /**
-    * Get the latency (the total time spent waiting) for the response.
-    *
-    * @return int
-    *   Latency, in milliseconds.
-    */
-    public function getLatency() {
+     * Get the latency (the total time spent waiting) for the response.
+     *
+     * @return int
+     *   Latency, in milliseconds.
+     */
+    public function getLatency()
+    {
         return $this->latency;
     }
 
     /**
-    * Get any cURL errors generated during the execution of the request.
-    *
-    * @return string
-    *   An error message, if any error was given. Otherwise, empty.
-    */
-    public function getError() {
+     * Get any cURL errors generated during the execution of the request.
+     *
+     * @return string
+     *   An error message, if any error was given. Otherwise, empty.
+     */
+    public function getError()
+    {
         return $this->error;
     }
 
     /**
-    * Check for content in the HTTP response body.
-    *
-    * This method should not be called until after execute(), and will only check
-    * for the content if the response code is 200 OK.
-    *
-    * @param string $content
-    *   String for which the response will be checked.
-    *
-    * @return bool
-    *   TRUE if $content was found in the response, FALSE otherwise.
-    */
-    public function checkResponseForContent($content = '') {
+     * Check for content in the HTTP response body.
+     *
+     * This method should not be called until after execute(), and will only check
+     * for the content if the response code is 200 OK.
+     *
+     * @param string $content
+     *   String for which the response will be checked.
+     *
+     * @return bool
+     *   TRUE if $content was found in the response, FALSE otherwise.
+     */
+    public function checkResponseForContent($content = '')
+    {
         if ($this->httpCode == 200 && !empty($this->responseBody)) {
-            if (strpos($this->responseBody, $content) !== FALSE) {
-                return TRUE;
+            if (strpos($this->responseBody, $content) !== false) {
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
-    * Pipeline for POST request.
-    *  
-    * @param string $endpoint completes the url.
-    * @param string $data json encoded.
-    * @param array|null $files
-    * @return std class|false the result from the endpoint
-    **/
-    public function POST($endpoint, $data, $files=null){
-        $address = $this->url  . $endpoint;
+     * Pipeline for POST request.
+     *
+     * @param string $endpoint completes the url.
+     * @param string $data json encoded.
+     * @param array|null $files
+     * @return std class|false the result from the endpoint
+     **/
+    public function POST($endpoint, $data, $files = null)
+    {
+        $address = $this->url . $endpoint;
         $this->setRequestType(Request::POST);
         $this->setPostFields($data, $files);
         return $this->execute($address);
     }
 
     /**
-    * Pipeline for GET request.
-    *  
-    * @param string $endpoint completes the url.
-    * @return std class|false the result from the endpoint
-    **/
-    public function GET($endpoint){
-        $address = $this->url  . $endpoint;
+     * Pipeline for GET request.
+     *
+     * @param string $endpoint completes the url.
+     * @return std class|false the result from the endpoint
+     **/
+    public function GET($endpoint)
+    {
+        $address = $this->url . $endpoint;
         $this->setRequestType(Request::GET);
         return $this->execute($address);
     }
 
     /**
-    * Check a given address with cURL.
-    *
-    * After this method is completed, the response body, headers, latency, etc.
-    * will be populated, and can be accessed with the appropriate methods.
-    */
-    private function execute($address) {
+     * Check a given address with cURL.
+     *
+     * After this method is completed, the response body, headers, latency, etc.
+     * will be populated, and can be accessed with the appropriate methods.
+     */
+    private function execute($address)
+    {
         // Set a default latency value.
         $latency = 0;
 
@@ -401,7 +418,6 @@ class Request {
         if (isset($this->token)) {
             array_push($this->headers, 'Authorization: Token ' . $this->token);
         }
-
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
         // If cookies are enabled, use them.
         if ($this->cookiesEnabled) {
@@ -411,25 +427,25 @@ class Request {
         // Send a custom request if set (instead of standard GET).
         if (isset($this->requestType)) {
             curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $this->requestType);
-        // If POST fields are given, and this is a POST request, add fields.
+            // If POST fields are given, and this is a POST request, add fields.
             if ($this->requestType == 'POST' && isset($this->postFields)) {
                 curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->postFields);
             }
         }
         // Don't print the response; return it from curl_exec().
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->ch, CURLOPT_URL, $address);
         curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, $this->connectTimeout);
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $this->timeout);
         // Follow redirects (maximum of 5).
-        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($this->ch, CURLOPT_MAXREDIRS, 5);
         // SSL support.
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, $this->ssl);
         // Set a custom UA string so people can identify our requests.
         curl_setopt($this->ch, CURLOPT_USERAGENT, $this->userAgent);
         // Output the header in the response.
-        curl_setopt($this->ch, CURLOPT_HEADER, TRUE);
+        curl_setopt($this->ch, CURLOPT_HEADER, true);
         $response = curl_exec($this->ch);
         $error = curl_error($this->ch);
         $http_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
@@ -438,12 +454,15 @@ class Request {
 
         // Set the header, response, error and http code.
         $this->responseHeader = substr($response, 0, $header_size);
-        if (strpos($address, '/template') === false && strpos($address, '/graph') === false)
+        if (strpos($address, '/template') === false && strpos($address, '/graph') === false) {
             $this->responseBody = json_decode(substr($response, $header_size));
-        else
+        } else {
             $this->responseBody = substr($response, $header_size);
+        }
+
         $this->error = $error;
         $this->httpCode = $http_code;
+        $this->headers = array();
 
         // Convert the latency to ms.
         $this->latency = round($time * 1000);
@@ -461,7 +480,7 @@ class Request {
         if (curl_errno($this->ch)) {
             throw new NetworkError(curl_error($this->ch), curl_errno($this->ch));
         }
-        
+
         if ($this->httpCode >= 400 && $this->httpCode <= 499) {
             if ($this->failOnError) {
                 throw new ClientError($this->responseBody, $this->httpCode);

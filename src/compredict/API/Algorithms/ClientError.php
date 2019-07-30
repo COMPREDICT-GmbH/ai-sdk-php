@@ -1,5 +1,6 @@
 <?php
-namespace Compredict\API;
+namespace Compredict\API\Algorithms;
+
 /**
  * Raised when a client error (400+) is returned from the API.
  */

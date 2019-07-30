@@ -1,5 +1,6 @@
 <?php
-namespace Compredict\API;
+namespace Compredict\API\Algorithms;
+
 /**
  * Base class for API exceptions. Used if failOnError is true.
  */

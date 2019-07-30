@@ -182,7 +182,10 @@ class Client
     public function getAlgorithms()
     {
         $response = $this->http->GET('/algorithms');
-        return $this->mapCollection('Algorithm', $response);
+        if ($response == false || is_string($response)) {
+            return $response;
+        }
+        return new Resources\Algorithms($response);
     }
 
     /**

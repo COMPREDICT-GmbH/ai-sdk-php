@@ -18,15 +18,14 @@ $ppk_path = getenv("COMPREDICT_AI_CORE_PPK", null);
 $passphrase = getenv("COMPREDICT_AI_CORE_PASSPHRASE", "");
 
 // Create compredict client and set the necessary options.
-$client = Compredict::getInstance($token, $callback_url, $fail_on_error, $passphrase);
+$client = Compredict::getInstance($token, null, $fail_on_error, $passphrase);
 $client->failOnError(false);
 
 // Calling an algorithm and test it.
 $test_data = file_get_contents("test_observer.json");
+$algos = $client->getAlgorithms();
 
-$algo = $client->getAlgorithm('observer');
-
-if ($algo == false) {
+if ($algos == false) {
     var_dump($client->getLastError());
     die();
 }
@@ -36,7 +35,7 @@ $evaluate['rainflow-counting'] = [];
 $evaluate['rainflow-counting']["hysteresis"] = 0.2;
 $evaluate['rainflow-counting']["N"] = 2;
 
-if ($results = $algo->predict(json_decode($test_data, true), $evaluate = $evaluate, $encrypt = false)) {
+if ($results = $algos->observer->predict(json_decode($test_data, true), $evaluate = $evaluate, $encrypt = false)) {
     if ($results instanceof Task) {
         echo "It is a task<br>";
         while ($results->getCurrentStatus() != Task::STATUS_FINISHED) {

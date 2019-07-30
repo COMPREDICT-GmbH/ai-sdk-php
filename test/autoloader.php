@@ -8,6 +8,7 @@ include "../src/Compredict/API/Algorithms/ServerError.php";
 include "../src/Compredict/API/Algorithms/Client.php";
 include "../src/Compredict/API/Algorithms/Request.php";
 include "../src/Compredict/API/Algorithms/Resource.php";
+include "../src/Compredict/API/Algorithms/Resources/Algorithms.php";
 include "../src/Compredict/API/Algorithms/Resources/Algorithm.php";
 include "../src/Compredict/API/Algorithms/Resources/Prediction.php";
 include "../src/Compredict/API/Algorithms/Resources/Task.php";

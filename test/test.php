@@ -18,7 +18,7 @@ $ppk_path = getenv("COMPREDICT_AI_CORE_PPK", null);
 $passphrase = getenv("COMPREDICT_AI_CORE_PASSPHRASE", "");
 
 // Create compredict client and set the necessary options.
-$client = Compredict::getInstance($token, null, $fail_on_error, $passphrase);
+$client = new Compredict($token, null, $fail_on_error, $passphrase);
 $client->failOnError(false);
 
 // Calling an algorithm and test it.

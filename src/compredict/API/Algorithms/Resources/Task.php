@@ -12,9 +12,9 @@ class Task extends Resource
     const STATUS_PROGRESS = "In Progress";
     const STATUS_FINISHED = "Finished";
 
-    public function __construct($object = false)
+    public function __construct($object = false, $client = null)
     {
-        parent::__construct($object);
+        parent::__construct($object, $client);
         $this->status = $this->status ?? self::STATUS_PENDING;
         $this->success = $this->success ?? null;
         $this->error = $this->error ?? null;

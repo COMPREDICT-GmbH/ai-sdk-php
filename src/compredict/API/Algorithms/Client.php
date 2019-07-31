@@ -6,7 +6,6 @@ use \Exception as Exception;
 
 class Client
 {
-    use SingletonTrait;
 
     /**
      * Request instance.
@@ -149,7 +148,7 @@ class Client
 
         $baseResource = __NAMESPACE__ . '\\' . $resource;
         $class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Algorithms\\Resources\\' . $resource;
-        return new $class($object);
+        return new $class($object, $this);
     }
 
     /**
@@ -169,7 +168,7 @@ class Client
         $resource_class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Algorithms\\Resources\\' . $resource;
         $array_of_resources = array();
         foreach ($object as $res) {
-            array_push($array_of_resources, new $resource_class($object));
+            array_push($array_of_resources, new $resource_class($object, $this));
         }
         return $array_of_resources;
     }

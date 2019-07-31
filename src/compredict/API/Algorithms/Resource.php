@@ -15,13 +15,13 @@ class Resource
      */
     protected $client;
 
-    public function __construct($object = false)
+    public function __construct($object = false, $client = null)
     {
         if (is_array($object)) {
             $object = (isset($object[0])) ? $object[0] : false;
         }
         $this->fields = ($object) ? $object : new \stdClass;
-        $this->client = Client::getInstance();
+        $this->client = $client;
     }
 
     public function __get($field)

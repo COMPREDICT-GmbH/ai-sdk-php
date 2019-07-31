@@ -8,9 +8,9 @@ use Compredict\API\Algorithms\Resource;
 class Algorithm extends Resource
 {
 
-    public function __construct($object = false)
+    public function __construct($object = false, $client = null)
     {
-        parent::__construct($object);
+        parent::__construct($object, $client);
         $this->last_result = null;
     }
 

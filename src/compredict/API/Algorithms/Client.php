@@ -26,7 +26,8 @@ class Client
      *
      * @var string
      **/
-    protected $baseURL = 'https://aic.compredict.de/api/';
+    //protected $baseURL = 'https://aic.compredict.de/api/';
+    protected $baseURL = 'localhost:8800/api/';
 
     /**
      * API version
@@ -49,7 +50,7 @@ class Client
      */
     protected $ppk = false;
 
-    private function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "")
+    public function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "")
     {
         if (!isset($token) || strlen($token) !== 40) {
             throw new Exception("A 40 character API Key must be provided");
@@ -184,7 +185,7 @@ class Client
         if ($response == false || is_string($response)) {
             return $response;
         }
-        return new Resources\Algorithms($response);
+        return new Resources\Algorithms($response, $this);
     }
 
     /**
@@ -212,6 +213,18 @@ class Client
     }
 
     /**
+     * Returns the default Resource of Task after cancelation.
+     *
+     * @param String $task_id
+     * @return Resource/Algorithm object.
+     */
+    public function cancelTask($task_id)
+    {
+        $response = $this->http->DELETE("/algorithms/tasks/{$task_id}");
+        return $this->mapResource('Task', $response);
+    }
+
+    /**
      * Run the algorithm on the given data.
      *
      * @param String task_id
@@ -229,7 +242,7 @@ class Client
 
         $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files);
         // need to check if prediction or task.
-        $resource = (isset($response->results)) ? 'Prediction' : 'Task';
+        $resource = (isset($response->job_id)) ? 'Task' : 'Prediction';
         return $this->mapResource($resource, $response);
     }
 

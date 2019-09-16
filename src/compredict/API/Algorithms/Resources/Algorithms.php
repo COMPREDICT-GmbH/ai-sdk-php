@@ -7,9 +7,10 @@ class Algorithms
 
     protected $algorithms;
 
-    public function __construct($object = false)
+    public function __construct($object = false, $client = null)
     {
         $this->algorithms = $object;
+        $this->client = $client;
     }
 
     public function __get($field)
@@ -19,7 +20,7 @@ class Algorithms
         }
 
         $index = array_search($field, array_column($this->algorithms, 'id'));
-        return ($index === false) ? null : new Algorithm($this->algorithms[$index]);
+        return ($index === false) ? null : new Algorithm($this->algorithms[$index], $this->client);
     }
 
     public function __toString()

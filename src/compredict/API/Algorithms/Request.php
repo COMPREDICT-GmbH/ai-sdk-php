@@ -17,6 +17,7 @@ class Request
 
     const POST = 'POST';
     const GET = 'GET';
+    const DELETE = 'DELETE';
 
     // You can set the address when creating the Request object, or using the
 
@@ -398,6 +399,19 @@ class Request
     {
         $address = $this->url . $endpoint;
         $this->setRequestType(Request::GET);
+        return $this->execute($address);
+    }
+
+    /**
+     * Pipeline for DELETE request.
+     *
+     * @param string $endpoint completes the url.
+     * @return std class|false the result from the endpoint
+     **/
+    public function DELETE($endpoint)
+    {
+        $address = $this->url . $endpoint;
+        $this->setRequestType(Request::DELETE);
         return $this->execute($address);
     }
 

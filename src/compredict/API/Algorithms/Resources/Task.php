@@ -11,6 +11,7 @@ class Task extends Resource
     const STATUS_PENDING = "Pending";
     const STATUS_PROGRESS = "In Progress";
     const STATUS_FINISHED = "Finished";
+    const STATUS_CANCELED = "Canceled";
 
     public function __construct($object = false, $client = null)
     {
@@ -27,6 +28,13 @@ class Task extends Resource
         $task = $this->client->getTaskResult($this->job_id);
         $this->fields = $task->fields;
         return $this;
+    }
+
+    public function cancel()
+    {
+        $task = $this->client->cancelTask($this->job_id);
+        $this->status = $task->status;
+        return $task->fields->is_canceled;
     }
 
     public function getCurrentStatus()

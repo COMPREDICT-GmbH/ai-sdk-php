@@ -5,7 +5,7 @@ namespace Compredict\API\Algorithms\Resources;
 class Algorithms
 {
 
-    protected $algorithms;
+    public $algorithms;
 
     public function __construct($object = false, $client = null)
     {

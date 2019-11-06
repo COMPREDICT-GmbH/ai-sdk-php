@@ -143,7 +143,7 @@ class Client
      */
     private function mapResource($resource, $object)
     {
-        if ($object == false || is_string($object)) {
+        if ($object === false || is_string($object)) {
             return $object;
         }
 
@@ -161,7 +161,7 @@ class Client
      */
     private function mapCollection($resource, $object)
     {
-        if ($object == false || is_string($object)) {
+        if ($object === false || is_string($object)) {
             return $object;
         }
 
@@ -182,7 +182,7 @@ class Client
     public function getAlgorithms()
     {
         $response = $this->http->GET('/algorithms');
-        if ($response == false || is_string($response)) {
+        if ($response === false || is_string($response)) {
             return $response;
         }
         return new Resources\Algorithms($response, $this);

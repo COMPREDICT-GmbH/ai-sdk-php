@@ -120,6 +120,24 @@ class Client
     }
 
     /**
+     * Set the url to COMPREDICT AIC server.
+     * @param String $url
+     */
+    public function setURL($url)
+    {
+        $this->http->setURL($url);
+    }
+
+    /**
+     * Get the url to COMPREDICT AIC server
+     * @return String URL
+     */
+    public function getURL()
+    {
+        return $this->http->getURL();
+    }
+
+    /**
      * Function to set the Private key that will be used to decrypt the messages.
      *
      * @param string $keyPath path to the key .ppm file.

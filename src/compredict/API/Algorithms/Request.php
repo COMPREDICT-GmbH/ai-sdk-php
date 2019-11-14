@@ -133,6 +133,24 @@ class Request
     }
 
     /**
+     * Set the url to COMPREDICT AIC server.
+     * @param String $url
+     */
+    public function setURL($url)
+    {
+        $this->url = $url;
+    }
+
+    /**
+     * Get the url to COMPREDICT AIC server
+     * @return String URL
+     */
+    public function getURL()
+    {
+        return $this->url;
+    }
+
+    /**
      * Set the username and password for HTTP basic authentication.
      *
      * @param string $username

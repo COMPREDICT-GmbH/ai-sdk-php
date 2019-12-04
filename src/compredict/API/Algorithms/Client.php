@@ -244,16 +244,21 @@ class Client
     /**
      * Run the algorithm on the given data.
      *
-     * @param String task_id
+     * @param String $algorithm_id
      * @param Array $data to predict
      * @param Boolean $evaluate whether to apply standard evaluation or not.
+     * @param Boolean $encrypt to indicate whether the sent data is encrypt or not.
+     * @param String $callback URL that overrides the main $this->callback for receiving endpoint of data.
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
-    public function getPrediction($algorithm_id, $data, $evaluate = true, $encrypt = false)
+    public function getPrediction($algorithm_id, $data, $evaluate = true, $encrypt = false, $callback = null)
     {
         $requset_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
         $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt];
-        if (!is_null($this->callback_url)) {
+
+        if (!is_null($callback)) {
+            $request_data['callback_url'] = $this->callback_url;
+        } elseif (!is_null($this->callback_url)) {
             $request_data['callback_url'] = $this->callback_url;
         }
 

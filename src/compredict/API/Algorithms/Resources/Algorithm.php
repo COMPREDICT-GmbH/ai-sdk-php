@@ -14,9 +14,9 @@ class Algorithm extends Resource
         $this->last_result = null;
     }
 
-    public function predict($data, $evaluate = true, $encrypt = false, $callback = null)
+    public function predict($data, $evaluate = true, $encrypt = false, $callback = null, $callback_param = null)
     {
-        $this->last_result = $this->client->getPrediction($this->id, $data, $evaluate, $encrypt, $callback);
+        $this->last_result = $this->client->getPrediction($this->id, $data, $evaluate, $encrypt, $callback, $callback_param);
         return $this->last_result;
     }
 

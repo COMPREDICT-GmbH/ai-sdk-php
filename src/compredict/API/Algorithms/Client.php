@@ -64,6 +64,7 @@ class Client
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
         if (!is_null($ppk)) {
+            echo "here";
             $this->setPrivateKey($ppk, $passphrase);
         }
     }
@@ -249,12 +250,14 @@ class Client
      * @param Boolean $evaluate whether to apply standard evaluation or not.
      * @param Boolean $encrypt to indicate whether the sent data is encrypt or not.
      * @param String $callback URL that overrides the main $this->callback for receiving endpoint of data.
+     * @param Array $callback_param Additional parameters that a requester will receive in the callback url or
+     * when requesting the results.
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
-    public function getPrediction($algorithm_id, $data, $evaluate = true, $encrypt = false, $callback = null)
+    public function getPrediction($algorithm_id, $data, $evaluate = true, $encrypt = false, $callback_param = null, $callback = null)
     {
         $requset_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
-        $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt];
+        $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt, 'callback_param' => json_encode($callback_param)];
 
         if (!is_null($callback)) {
             $request_data['callback_url'] = $this->callback_url;

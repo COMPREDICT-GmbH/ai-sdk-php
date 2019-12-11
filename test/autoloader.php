@@ -1,6 +1,5 @@
 <?php
 
-include "../src/Compredict/API/Algorithms/SingletonTrait.php";
 include "../src/Compredict/API/Algorithms/Error.php";
 include "../src/Compredict/API/Algorithms/ClientError.php";
 include "../src/Compredict/API/Algorithms/NetworkError.php";

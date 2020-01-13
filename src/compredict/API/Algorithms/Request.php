@@ -283,7 +283,7 @@ class Request
      * @param array|null $files
      *   An array of fields that will be sent with the POST request.
      */
-    public function setPostFields($fields = array(), $files = null)
+    public function setPostFields($fields = array(), $files = null, $file_content_type = "application/json")
     {
         if (is_null($files)) {
             array_push($this->headers, 'Content-Type: application/json');
@@ -300,7 +300,8 @@ class Request
 
             foreach ($files as $name => $content) {
                 $data .= "--" . $delimiter . "\r\n"
-                    . 'Content-Disposition: form-data; name="' . $name . '"; filename="' . $content['fileName'] . '"' . "\r\n\r\n"
+                    . 'Content-Disposition: form-data; name="' . $name . '"; filename="' . $content['fileName'] . '"' . "\r\n"
+                    . 'Content-Type: ' . $file_content_type . "\r\n\r\n"
                     . $content['fileContent'] . "\r\n";
             }
 

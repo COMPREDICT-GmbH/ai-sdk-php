@@ -254,8 +254,9 @@ class Client
      * when requesting the results.
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
-    public function getPrediction($algorithm_id, $data, $evaluate = true, $encrypt = false, $callback_param = null, $callback = null)
-    {
+    public function getPrediction($algorithm_id, $data, $evaluate = true, $encrypt = false,
+        $callback_param = null, $callback = null, $file_content_type = "application/json") {
+
         $requset_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
         $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt, 'callback_param' => json_encode($callback_param)];
 
@@ -265,7 +266,7 @@ class Client
             $request_data['callback_url'] = $this->callback_url;
         }
 
-        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files);
+        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files, $file_content_type);
         // need to check if prediction or task.
         $resource = (isset($response->job_id)) ? 'Task' : 'Prediction';
         return $this->mapResource($resource, $response);

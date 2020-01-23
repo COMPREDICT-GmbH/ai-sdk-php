@@ -89,6 +89,7 @@ can be done by passing an array or stdClass object representing the new
 resource to the global create method:
 
 ~~~php
+// pass as array
 $X_test = array(
     "feature_1" => [1, 2, 3, 4], 
     "feature_2" => [2, 3, 4, 5]
@@ -96,6 +97,12 @@ $X_test = array(
 
 $algorithm = $compredict_client->getAlgorithm('algorithm_id');
 $result = $algorithm->predict($X_test);
+
+// pass as file_path
+$X_test = "/path/to/file.parquet";
+
+$algorithm = $compredict_client->getAlgorithm('algorithm_id');
+$result = $algorithm->predict($X_test, file_content_type="application/parquet");
 ~~~
 
 Depending on the algorithm's computation requirement, the result can be:

@@ -285,9 +285,11 @@ class Request
 	 */
 	public function setPostFields($fields = array(), $files = null, $file_content_type = "application/json")
 	{
-		if (is_null($files)) {
-			array_push($this->headers, 'Content-Type: application/json');
-			$this->postFields = $fields;
+		if (!is_array($files['features'])) {
+			if (get_class($files['features']) == "CURLFile") {
+				array_push($this->headers, "Content-Type: multipart/form-data");
+				$this->postFields = $files;
+			}
 		} else {
 			if(get_class($files['features']) == "CURLFile") {
 				array_push($this->headers, "Content-Type: multipart/form-data");

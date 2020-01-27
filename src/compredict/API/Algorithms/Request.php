@@ -7,7 +7,7 @@
  * Minimum requirements: PHP 5.3.x, cURL.
  *
  * @version 1.0
- * @author Ousama Esbel
+ * @author  Ousama Esbel
  */
 
 namespace Compredict\API\Algorithms;
@@ -22,9 +22,9 @@ class Request
 	// You can set the address when creating the Request object, or using the
 
 	// Variables used for the request.
-	public $userAgent = 'Mozilla/5.0 (compatible; PHP Request library)';
+	public $userAgent      = 'Mozilla/5.0 (compatible; PHP Request library)';
 	public $connectTimeout = 10;
-	public $timeout = 15;
+	public $timeout        = 15;
 
 	// Variables used for cookie support.
 	private $cookiesEnabled = false;
@@ -119,9 +119,10 @@ class Request
 
 	/**
 	 * The headers required for request
+	 *
 	 * @var array
 	 */
-	private $headers = array();
+	private $headers = [];
 
 	/**
 	 * Called when the Request object is created.
@@ -134,7 +135,8 @@ class Request
 
 	/**
 	 * Set the url to COMPREDICT AIC server.
-	 * @param String $url
+	 *
+	 * @param  String  $url
 	 */
 	public function setURL($url)
 	{
@@ -143,6 +145,7 @@ class Request
 
 	/**
 	 * Get the url to COMPREDICT AIC server
+	 *
 	 * @return String URL
 	 */
 	public function getURL()
@@ -153,9 +156,9 @@ class Request
 	/**
 	 * Set the username and password for HTTP basic authentication.
 	 *
-	 * @param string $username
+	 * @param  string  $username
 	 *   Username for basic authentication.
-	 * @param string $password
+	 * @param  string  $password
 	 *   Password for basic authentication.
 	 */
 	public function setToken($token)
@@ -176,7 +179,7 @@ class Request
 	 * <p><em>Note that this doesn't use the builtin CURL_FAILONERROR option,
 	 * as this fails fast, making the HTTP body and headers inaccessible.</em></p>
 	 *
-	 * @param bool $option the new state of this feature
+	 * @param  bool  $option  the new state of this feature
 	 */
 	public function failOnError($option = true)
 	{
@@ -195,7 +198,7 @@ class Request
 	/**
 	 * Enable cookies.
 	 *
-	 * @param string $cookie_path
+	 * @param  string  $cookie_path
 	 *   Absolute path to a txt file where cookie information will be stored.
 	 */
 	public function enableCookies($cookie_path)
@@ -224,7 +227,7 @@ class Request
 	/**
 	 * Set timeout.
 	 *
-	 * @param int $timeout
+	 * @param  int  $timeout
 	 *   Timeout value in seconds.
 	 */
 	public function setTimeout($timeout = 15)
@@ -246,7 +249,7 @@ class Request
 	/**
 	 * Set connect timeout.
 	 *
-	 * @param int $connect_timeout
+	 * @param  int  $connect_timeout
 	 *   Timeout value in seconds.
 	 */
 	public function setConnectTimeout($connectTimeout = 10)
@@ -268,7 +271,7 @@ class Request
 	/**
 	 * Set a request type (by default, cURL will send a GET request).
 	 *
-	 * @param string $type
+	 * @param  string  $type
 	 *   GET, POST, DELETE, PUT, etc. Any standard request type will work.
 	 */
 	public function setRequestType($type)
@@ -279,41 +282,39 @@ class Request
 	/**
 	 * Set the POST fields (only used if $this->requestType is 'POST').
 	 *
-	 * @param array $fields
-	 * @param array|null $files
+	 * @param  array       $fields
+	 * @param  array|null  $files
 	 *   An array of fields that will be sent with the POST request.
 	 */
-	public function setPostFields($fields = array(), $files = null, $file_content_type = "application/json")
+	public function setPostFields($fields = [], $files = null, $file_content_type = "application/json")
 	{
-		if (!is_array($files['features'])) {
+		if (is_null($files)) {
+			array_push($this->headers, 'Content-Type: application/json');
+			$this->postFields = $fields;
+		} else {
 			if (get_class($files['features']) == "CURLFile") {
 				array_push($this->headers, "Content-Type: multipart/form-data");
 				$this->postFields = $files;
-			}
-		} else {
-			if(get_class($files['features']) == "CURLFile") {
-				array_push($this->headers, "Content-Type: multipart/form-data");
-				$this->postFields = $files;
 			} else {
-				$delimiter = '-------------' . uniqid();
+				$delimiter = '-------------'.uniqid();
 				$data = '';
 
 				foreach ($fields as $name => $content) {
-					$data .= "--" . $delimiter . "\r\n"
-						. 'Content-Disposition: form-data; name="' . $name . "\"\r\n\r\n"
-						. $content . "\r\n";
+					$data .= "--".$delimiter."\r\n"
+						.'Content-Disposition: form-data; name="'.$name."\"\r\n\r\n"
+						.$content."\r\n";
 				}
 
 				foreach ($files as $name => $content) {
-					$data .= "--" . $delimiter . "\r\n"
-						. 'Content-Disposition: form-data; name="' . $name . '"; filename="' . $content['fileName'] . '"' . "\r\n"
-						. 'Content-Type: ' . $file_content_type . "\r\n\r\n"
-						. $content['fileContent'] . "\r\n";
+					$data .= "--".$delimiter."\r\n"
+						.'Content-Disposition: form-data; name="'.$name.'"; filename="'.$content['fileName'].'"'."\r\n"
+						.'Content-Type: '.$file_content_type."\r\n\r\n"
+						.$content['fileContent']."\r\n";
 				}
 
-				$data .= "--" . $delimiter . "--\r\n";
-				array_push($this->headers, 'Content-Type: multipart/form-data; boundary=' . $delimiter);
-				array_push($this->headers, 'Content-Length: ' . strlen($data));
+				$data .= "--".$delimiter."--\r\n";
+				array_push($this->headers, 'Content-Type: multipart/form-data; boundary='.$delimiter);
+				array_push($this->headers, 'Content-Length: '.strlen($data));
 				$this->postFields = $data;
 			}
 
@@ -383,7 +384,7 @@ class Request
 	 * This method should not be called until after execute(), and will only check
 	 * for the content if the response code is 200 OK.
 	 *
-	 * @param string $content
+	 * @param  string  $content
 	 *   String for which the response will be checked.
 	 *
 	 * @return bool
@@ -402,14 +403,15 @@ class Request
 	/**
 	 * Pipeline for POST request.
 	 *
-	 * @param string $endpoint completes the url.
-	 * @param string $data json encoded.
-	 * @param array|null $files
+	 * @param  string      $endpoint  completes the url.
+	 * @param  string      $data      json encoded.
+	 * @param  array|null  $files
+	 *
 	 * @return std class|false the result from the endpoint
 	 **/
 	public function POST($endpoint, $data, $files = null)
 	{
-		$address = $this->url . $endpoint;
+		$address = $this->url.$endpoint;
 		$this->setRequestType(Request::POST);
 		$this->setPostFields($data, $files);
 		return $this->execute($address);
@@ -418,12 +420,13 @@ class Request
 	/**
 	 * Pipeline for GET request.
 	 *
-	 * @param string $endpoint completes the url.
+	 * @param  string  $endpoint  completes the url.
+	 *
 	 * @return std class|false the result from the endpoint
 	 **/
 	public function GET($endpoint)
 	{
-		$address = $this->url . $endpoint;
+		$address = $this->url.$endpoint;
 		$this->setRequestType(Request::GET);
 		return $this->execute($address);
 	}
@@ -431,12 +434,13 @@ class Request
 	/**
 	 * Pipeline for DELETE request.
 	 *
-	 * @param string $endpoint completes the url.
+	 * @param  string  $endpoint  completes the url.
+	 *
 	 * @return std class|false the result from the endpoint
 	 **/
 	public function DELETE($endpoint)
 	{
-		$address = $this->url . $endpoint;
+		$address = $this->url.$endpoint;
 		$this->setRequestType(Request::DELETE);
 		return $this->execute($address);
 	}
@@ -456,7 +460,7 @@ class Request
 		$this->ch = curl_init();
 		// If there are basic authentication credentials, use them.
 		if (isset($this->token)) {
-			array_push($this->headers, 'Authorization: Token ' . $this->token);
+			array_push($this->headers, 'Authorization: Token '.$this->token);
 		}
 		curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
 		// If cookies are enabled, use them.
@@ -503,7 +507,7 @@ class Request
 
 		$this->error = $error;
 		$this->httpCode = $http_code;
-		$this->headers = array();
+		$this->headers = [];
 
 		// Convert the latency to ms.
 		$this->latency = round($time * 1000);

@@ -5,6 +5,7 @@ script/*
 *.json
 
 # Testing
+/.idea
 /phpunit.xml
 /build
 /test/reports

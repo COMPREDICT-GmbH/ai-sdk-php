@@ -292,9 +292,12 @@ class Request
 			array_push($this->headers, 'Content-Type: application/json');
 			$this->postFields = $fields;
 		} else {
-			if (get_class($files['features']) == "CURLFile") {
-				array_push($this->headers, "Content-Type: multipart/form-data");
-				$this->postFields = $files;
+
+			if (!is_array($files['features'])) {
+				if (get_class($files['features']) == "CURLFile") {
+					array_push($this->headers, "Content-Type: multipart/form-data");
+					$this->postFields = $files;
+				}
 			} else {
 				$delimiter = '-------------'.uniqid();
 				$data = '';

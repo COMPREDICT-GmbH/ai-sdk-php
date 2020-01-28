@@ -296,7 +296,8 @@ class Request
 			if (!is_array($files['features'])) {
 				if (get_class($files['features']) == "CURLFile") {
 					array_push($this->headers, "Content-Type: multipart/form-data");
-					$this->postFields = $files;
+					$fields ['features'] = $files['features'];
+					$this->postFields = $fields;
 				}
 			} else {
 				$delimiter = '-------------'.uniqid();

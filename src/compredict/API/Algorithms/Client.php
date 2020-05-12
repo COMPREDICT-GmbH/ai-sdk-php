@@ -60,7 +60,7 @@ class Client
 		}
 
 		$this->api_key = $token;
-		$this->http = new Request($this->baseURL . $this->APIVersion);
+		$this->http = new Request(\Config::get('compredict.ai_core.server_url') . $this->APIVersion);
 		$this->callback_url = $callback_url;
 		$this->http->setToken($token);
 		if (!is_null($ppk)) {

@@ -491,6 +491,7 @@ class Request
 		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 5);
 		// SSL support.
 		curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, $this->ssl);
+		curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->ssl ? 2 : 0);
 		// Set a custom UA string so people can identify our requests.
 		curl_setopt($this->ch, CURLOPT_USERAGENT, $this->userAgent);
 		// Output the header in the response.

@@ -60,11 +60,11 @@ class Client
         }
 
         $this->api_key = $token;
-        $this->http = new Request(\Config::get('compredict.ai_core.server_url') . $this->APIVersion);
+        $this->http = new Request($this->baseURL . $this->APIVersion);
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
+
         if (! is_null($ppk)) {
-            echo "here";
             $this->setPrivateKey($ppk, $passphrase);
         }
     }
@@ -174,11 +174,12 @@ class Client
     /**
      * Internal method to wrap items in a collection to resource classes.
      *
-     * @param string $resource name of the resource class
-     * @param array $object object collection
-     * @return array
+     * @param  string  $resource  name of the resource class
+     * @param  $object  object collection
+     *
+     * @return array|false|string
      */
-    private function mapCollection($resource, $object)
+    private function mapCollection(string $resource, $object)
     {
         if ($object === false || is_string($object)) {
             return $object;
@@ -187,6 +188,7 @@ class Client
         $baseResource = __NAMESPACE__ . '\\' . $resource;
         $resource_class = (class_exists($baseResource)) ? $baseResource : 'Compredict\\API\\Algorithms\\Resources\\' . $resource;
         $array_of_resources = [];
+
         foreach ($object as $res) {
             array_push($array_of_resources, new $resource_class($object, $this));
         }
@@ -251,13 +253,15 @@ class Client
     /**
      * Run the algorithm on the given data.
      *
-     * @param String $algorithm_id
-     * @param Array | String $data to predict
-     * @param Boolean $evaluate whether to apply standard evaluation or not.
-     * @param Boolean $encrypt to indicate whether the sent data is encrypt or not.
-     * @param String $callback URL that overrides the main $this->callback for receiving endpoint of data.
-     * @param Array $callback_param Additional parameters that a requester will receive in the callback url or
+     * @param  String  $algorithm_id
+     * @param  Array | String  $data  to predict
+     * @param  Boolean  $evaluate  whether to apply standard evaluation or not.
+     * @param  Boolean  $encrypt  to indicate whether the sent data is encrypt or not.
+     * @param  null  $callback_param  Additional parameters that a requester will receive in the callback url or
      * when requesting the results.
+     * @param  null  $callback  URL that overrides the main $this->callback for receiving endpoint of data.
+     * @param  string  $file_content_type
+     *
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
     public function getPrediction(
@@ -267,16 +271,16 @@ class Client
         $encrypt = false,
         $callback_param = null,
         $callback = null,
+        $version = null,
         $file_content_type = "application/json"
-    )
-    {
+    ) {
         if (is_string($data)) {
-            $requset_files =
+            $request_files =
                 [
                     'features' => curl_file_create($data, $file_content_type, 'featuers.json'),
                 ];
         } else {
-            $requset_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+            $request_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
         }
 
         $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt, 'callback_param' => json_encode($callback_param)];
@@ -287,7 +291,11 @@ class Client
             $request_data['callback_url'] = $this->callback_url;
         }
 
-        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $requset_files, $file_content_type);
+        if (! is_null($version)) {
+            $request_data['version'] = $version;
+        }
+
+        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $request_files, $file_content_type);
         // need to check if prediction or task.
         $resource = (isset($response->job_id)) ? 'Task' : 'Prediction';
 

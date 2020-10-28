@@ -21,14 +21,14 @@
         "ext-openssl": "*"
     },
     "require-dev": {
-        "codeless/jugglecode": "1.0",
         "friendsofphp/php-cs-fixer": "^2.16",
+        "mockery/mockery": "^1.4",
         "phpunit/phpunit": "^9.0",
         "vlucas/phpdotenv": "^2.2"
     },
-    "autoload": {
+   "autoload": {
         "psr-4": {
-            "Compredict\\": "src/"
+             "Compredict\\": "src/"
         }
     },
     "autoload-dev": {

@@ -1,7 +1,7 @@
 COMPREDICT's AI CORE API Client
 ===============================
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/compredict/ai-sdk.svg?style=flat-square)](https://packagist.org/packages/compredict/ai-sdk)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/compredict/ai-sdk/run-tests?label=tests)](https://github.com/compredict/ai-sdk/actions?query=workflow%3Arun-tests+branch%3Amaster)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/muhametsherifi/ai-sdk-php/run-tests?label=tests)](https://github.com/muhametsherifi/ai-sdk-php/actions?query=workflow%3Arun-tests+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/compredict/ai-sdk.svg?style=flat-square)](https://packagist.org/packages/compredict/ai-sdk)
 
 
@@ -94,10 +94,10 @@ resource to the global create method:
 
 ~~~php
 // pass as array
-$X_test = array(
+$X_test = [
     "feature_1" => [1, 2, 3, 4], 
     "feature_2" => [2, 3, 4, 5]
-);
+];
 
 $algorithm = $compredict_client->getAlgorithm('algorithm_id');
 $result = $algorithm->predict($X_test);
@@ -124,12 +124,12 @@ echo $algorithm->getResponseTime();
 or dynamically:
 
 ~~~php
-$result = $algorithm->predict(X_test, evaluate=True);
+$result = $algorithm->predict($X_test, $evaluate="True");
 
 if($result instanceof Compredict\API\Algorithms\Resources\Task){
     echo $result->getCurrentStatus();
     while($result->getCurrentStatus() != Compredict\API\Algorithms\Resources\Task::STATUS_FINISHED){
-        sleep("10"); # wait some time.
+        sleep("3"); # wait some time.
         $result->update(); // check Compredict for updated results.
     }
     echo $result->success;
@@ -174,7 +174,7 @@ Here is an example:
 // First, you should provide public key in COMPREDICT's dashboard.
 
 // Second, Call predict and set encrypt as True
-$result = $algorithm->predict(X_test, evaluate=True, encrypt=True);
+$result = $algorithm->predict($X_test, $evaluate=True, $encrypt=True);
 
 if($result instanceof Compredict\API\Algorithms\Resources\Task){
     echo $result->getCurrentStatus();

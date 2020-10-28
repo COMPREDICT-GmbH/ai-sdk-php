@@ -1,5 +1,9 @@
 COMPREDICT's AI CORE API Client
 ===============================
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/compredict/ai-sdk.svg?style=flat-square)](https://packagist.org/packages/compredict/ai-sdk)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/compredict/ai-sdk/run-tests?label=tests)](https://github.com/compredict/ai-sdk/actions?query=workflow%3Arun-tests+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/compredict/ai-sdk.svg?style=flat-square)](https://packagist.org/packages/compredict/ai-sdk)
+
 
 PHP client for connecting to the COMPREDICT V1 REST API.
 
@@ -9,7 +13,7 @@ https://compredict.de
 Requirements
 ------------
 
-- PHP 7.0 or greater
+- PHP 7.2 or greater
 - cUrl extension enabled
 
 **To connect to the API with basic auth you need the following:**

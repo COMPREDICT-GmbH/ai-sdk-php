@@ -2,12 +2,10 @@
 
 namespace Compredict\API\Algorithms\Resources;
 
-use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Resource;
 
 class Task extends Resource
 {
-
     const STATUS_PENDING = "Pending";
     const STATUS_PROGRESS = "In Progress";
     const STATUS_FINISHED = "Finished";
@@ -27,6 +25,7 @@ class Task extends Resource
     {
         $task = $this->client->getTaskResult($this->job_id);
         $this->fields = $task->fields;
+
         return $this;
     }
 
@@ -34,6 +33,7 @@ class Task extends Resource
     {
         $task = $this->client->cancelTask($this->job_id);
         $this->status = $task->status;
+
         return $task->fields->is_canceled;
     }
 

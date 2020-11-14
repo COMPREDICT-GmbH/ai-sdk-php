@@ -21,7 +21,6 @@
         "ext-openssl": "*"
     },
     "require-dev": {
-        "codeless/jugglecode": "1.0",
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpunit/phpunit": "^9.0",
         "vlucas/phpdotenv": "^2.2"

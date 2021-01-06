@@ -271,6 +271,7 @@ class Client
         $encrypt = false,
         $callback_param = null,
         $callback = null,
+        $version,
         $file_content_type = "application/json"
     ) {
         if (is_string($data)) {
@@ -290,7 +291,13 @@ class Client
             $request_data['callback_url'] = $this->callback_url;
         }
 
-        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $request_files, $file_content_type);
+        if (! is_null($version)) {
+            $endpoint = "/algorithms/{$algorithm_id}/predict?version={$version}";
+        } else {
+            $endpoint = "/algorithms/{$algorithm_id}/predict";
+        }
+
+        $response = $this->http->post($endpoint, $request_data, $request_files, $file_content_type);
         // need to check if prediction or task.
         $resource = (isset($response->job_id)) ? 'Task' : 'Prediction';
 

@@ -5,17 +5,27 @@ namespace Compredict\Tests;
 use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Resources\Algorithm;
 use Compredict\API\Algorithms\Resources\Algorithms;
+use Dotenv\Dotenv;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
+    public $client;
+
+    public function setUp(): void
+    {
+        if (file_exists(dirname(__DIR__) . '/.env')) {
+            (new Dotenv(dirname(__DIR__), '.env'))->load();
+        }
+
+        $this->client = new Client(getenv('COMPREDICT_AI_CORE_KEY'));
+    }
+
     /** @test */
     public function it_will_return_a_compredict_client()
     {
-        $client = new Client('3bba51179f1c40929b259f983a790882c09e7730');
-
-        $this->assertInstanceOf(Client::class, $client);
+        $this->assertInstanceOf(Client::class, $this->client);
     }
 
     /** @test */
@@ -35,9 +45,7 @@ class ClientTest extends TestCase
     /** @test */
     public function it_will_return_an_array_of_algorithms()
     {
-        $client = new Client('3bba51179f1c40929b259f983a790882c09e7730');
-
-        $algorithms = $client->getAlgorithms();
+        $algorithms = $this->client->getAlgorithms();
 
         $this->assertIsArray($algorithms->algorithms);
         $this->assertInstanceOf(Algorithms::class, $algorithms);
@@ -46,9 +54,7 @@ class ClientTest extends TestCase
     /** @test */
     public function it_will_return_an_algorithm_based_on_id()
     {
-        $client = new Client('3bba51179f1c40929b259f983a790882c09e7730');
-
-        $observerAlgorithm = $client->getAlgorithm('observer');
+        $observerAlgorithm = $this->client->getAlgorithm('observer');
 
         $this->assertEquals('observer', $observerAlgorithm->id);
         $this->assertInstanceOf(Algorithm::class, $observerAlgorithm);

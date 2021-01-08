@@ -26,7 +26,7 @@ class Client
      *
      * @var string
      **/
-    protected $baseURL = 'https://b.aic.compredict.de/api/';
+    protected $baseURL = 'https://aic.compredict.de/api/';
 
     /**
      * API version
@@ -260,7 +260,6 @@ class Client
      * @param  null  $callback_param  Additional parameters that a requester will receive in the callback url or
      * when requesting the results.
      * @param  null  $callback  URL that overrides the main $this->callback for receiving endpoint of data.
-     * @param  null  $version
      * @param  string  $file_content_type
      *
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
@@ -293,12 +292,10 @@ class Client
         }
 
         if (! is_null($version)) {
-            $endpoint = "/algorithms/{$algorithm_id}/predict?version={$version}";
-        } else {
-            $endpoint = "/algorithms/{$algorithm_id}/predict";
+            $request_data['version'] = $version;
         }
 
-        $response = $this->http->post($endpoint, $request_data, $request_files, $file_content_type);
+        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $request_files, $file_content_type);
         // need to check if prediction or task.
         $resource = (isset($response->job_id)) ? 'Task' : 'Prediction';
 

@@ -35,4 +35,6 @@ jobs:
         run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 
       - name: Execute tests
+        env:
+          COMPREDICT_AI_CORE_KEY: ${{ secrets.COMPREDICT_AI_CORE_KEY }}
         run: vendor/bin/phpunit

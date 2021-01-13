@@ -45,6 +45,7 @@ class ClientTest extends TestCase
     /** @test */
     public function it_will_return_an_array_of_algorithms()
     {
+        $this->markTestSkipped();
         $algorithms = $this->client->getAlgorithms();
 
         $this->assertIsArray($algorithms->algorithms);
@@ -54,6 +55,7 @@ class ClientTest extends TestCase
     /** @test */
     public function it_will_return_an_algorithm_based_on_id()
     {
+        $this->markTestSkipped();
         $observerAlgorithm = $this->client->getAlgorithm('observer');
 
         $this->assertEquals('observer', $observerAlgorithm->id);

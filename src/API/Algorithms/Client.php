@@ -60,7 +60,7 @@ class Client
         }
 
         $this->api_key = $token;
-        $this->http = new Request($this->baseURL . $this->APIVersion);
+        $this->http = new Request($this->getBaseUrl() . $this->APIVersion);
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
 
@@ -150,6 +150,26 @@ class Client
         $ppk_str = fread($fp, 8192);
         fclose($fp);
         $this->ppk = openssl_pkey_get_private($ppk_str, $passphrase);
+    }
+
+    /**
+     * Set base URL.
+     *
+     * @param  string  $url.
+    */
+    public function setBaseUrl(string $url)
+    {
+        $this->baseURL = $url;
+    }
+
+    /**
+     * Get base URL.
+     *
+     * @return string
+    */
+    public function getBaseUrl()
+    {
+        return $this->baseURL;
     }
 
     /**

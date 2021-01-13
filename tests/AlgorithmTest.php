@@ -3,10 +3,10 @@
 
 namespace Compredict\Tests;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
 use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Resources\Task;
+use Mockery;
+use PHPUnit\Framework\TestCase;
 
 class AlgorithmTest extends TestCase
 {

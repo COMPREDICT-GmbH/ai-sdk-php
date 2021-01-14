@@ -280,8 +280,8 @@ class Client
      * @param  null  $callback_param  Additional parameters that a requester will receive in the callback url or
      * when requesting the results.
      * @param  null  $callback  URL that overrides the main $this->callback for receiving endpoint of data.
+     * @param null | String $version algorithm's version to be requested, if null, then latest version is requested.
      * @param  string  $file_content_type
-     *
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
     public function getPrediction(

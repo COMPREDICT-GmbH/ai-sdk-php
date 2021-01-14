@@ -2,21 +2,20 @@
 
 namespace Compredict\API\Algorithms\Resources;
 
-use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Resource;
 
 class Algorithm extends Resource
 {
-
     public function __construct($object = false, $client = null)
     {
         parent::__construct($object, $client);
         $this->last_result = null;
     }
 
-    public function predict($data, $evaluate = true, $encrypt = false, $callback = null, $callback_param = null)
+    public function predict($data, $evaluate = true, $encrypt = false, $callback = null, $callback_param = null, $version = null)
     {
-        $this->last_result = $this->client->getPrediction($this->id, $data, $evaluate, $encrypt, $callback, $callback_param);
+        $this->last_result = $this->client->getPrediction($this->id, $data, $evaluate, $encrypt, $callback, $callback_param, $version);
+
         return $this->last_result;
     }
 

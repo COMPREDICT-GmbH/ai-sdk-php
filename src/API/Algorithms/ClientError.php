@@ -1,4 +1,5 @@
 <?php
+
 namespace Compredict\API\Algorithms;
 
 /**

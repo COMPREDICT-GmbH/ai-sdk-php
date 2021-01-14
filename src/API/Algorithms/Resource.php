@@ -42,12 +42,10 @@ class Resource
         } else {
             $this->fields->$field = $value;
         }
-
     }
 
     public function __isset($field)
     {
         return (isset($this->fields->$field));
     }
-
 }

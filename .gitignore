@@ -1,4 +1,5 @@
 /.idea
+/examples
 vendor
 composer.lock
 build

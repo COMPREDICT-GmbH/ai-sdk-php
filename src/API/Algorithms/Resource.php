@@ -2,16 +2,18 @@
 
 namespace Compredict\API\Algorithms;
 
+use stdClass;
+
 class Resource
 {
 
     /**
-     * @var \stdClass
+     * @var stdClass
      */
     protected $fields;
 
     /**
-     * @var \CompredictAICore\Api\Client
+     * @var Client
      */
     protected $client;
 
@@ -20,7 +22,7 @@ class Resource
         if (is_array($object)) {
             $object = (isset($object[0])) ? $object[0] : false;
         }
-        $this->fields = ($object) ? $object : new \stdClass;
+        $this->fields = ($object) ? $object : new stdClass;
         $this->client = $client;
     }
 

@@ -22,7 +22,7 @@ class Algorithm extends Resource
     {
         parent::__construct($object, $client);
         $this->last_result = null;
-        $versions = array();
+        $versions = [];
         print_r($this->versions);
         foreach ($this->get_versions() as $key => $version) {
             $version->algorithm_id = $this->id;
@@ -38,16 +38,17 @@ class Algorithm extends Resource
         $callback_param = null,
         $callback = null,
         $version = null
-    )
-    {
+    ) {
         echo "version " . $version . " version";
-        $this->last_result = $this->client->getPrediction($this->id,
+        $this->last_result = $this->client->getPrediction(
+            $this->id,
             $data,
             $evaluate,
             $encrypt,
             $callback_param,
             $callback,
-            $version);
+            $version
+        );
 
         return $this->last_result;
     }
@@ -74,8 +75,10 @@ class Algorithm extends Resource
 
     public function getTemplate($type = 'input')
     {
-        if (count($this->versions) == 0)
+        if (count($this->versions) == 0) {
             return null;
+        }
+
         return $this->versions[0] . get_template($type);
     }
 

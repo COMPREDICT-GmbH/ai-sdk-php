@@ -23,8 +23,9 @@ class Version extends Resource
     public function __construct($object = false, $client = null)
     {
         parent::__construct($object, $client);
-        if (is_null($this->algorithm_id))
+        if (is_null($this->algorithm_id)) {
             throw new \UnexpectedValueException("Please set algorithm_id");
+        }
         $this->last_result = null;
     }
 
@@ -34,15 +35,16 @@ class Version extends Resource
         $encrypt = false,
         $callback_param = null,
         $callback = null
-    )
-    {
-        $this->last_result = $this->client->getPrediction($this->algorithm_id,
+    ) {
+        $this->last_result = $this->client->getPrediction(
+            $this->algorithm_id,
             $data,
             $evaluate,
             $encrypt,
             $callback,
             $callback_param,
-            $this->version);
+            $this->version
+        );
 
         return $this->last_result;
     }

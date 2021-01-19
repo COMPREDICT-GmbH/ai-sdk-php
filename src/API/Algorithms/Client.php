@@ -53,7 +53,12 @@ class Client
 
     public function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "")
     {
-        if (!isset($token) || strlen($token) !== 40) {
+        if(!isset($token))
+        {
+            throw new UnexpectedValueException("Token is empty, please provide a token");
+        }
+        elseif (strlen(strlen($token) !== 40))
+        {
             throw new UnexpectedValueException("A 40 character API Key must be provided");
         }
 

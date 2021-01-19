@@ -53,16 +53,11 @@ class Client
 
     public function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "")
     {
-        if(!isset($token))
-        {
-            throw new UnexpectedValueException("Token is empty, please provide a token");
-        }
-        elseif (strlen(strlen($token) !== 40))
-        {
+        if (! isset($token) || strlen($token) !== 40) {
             throw new UnexpectedValueException("A 40 character API Key must be provided");
         }
 
-        if (!is_null($callback_url) && !filter_var($callback_url, FILTER_VALIDATE_URL)) {
+        if (! is_null($callback_url) && ! filter_var($callback_url, FILTER_VALIDATE_URL)) {
             throw new UnexpectedValueException("URL provided is not valid");
         }
 
@@ -71,7 +66,7 @@ class Client
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
 
-        if (!is_null($ppk)) {
+        if (! is_null($ppk)) {
             $this->setPrivateKey($ppk, $passphrase);
         }
     }
@@ -91,7 +86,7 @@ class Client
      */
     public function setCallbackUrl($callback_url)
     {
-        if (!filter_var($callback_url, FILTER_VALIDATE_URL)) {
+        if (! filter_var($callback_url, FILTER_VALIDATE_URL)) {
             throw new Exception("URL provided is not valid");
         }
 
@@ -281,8 +276,7 @@ class Client
         $callback = null,
         $version = null,
         $file_content_type = "application/json"
-    )
-    {
+    ) {
         if (is_string($data)) {
             $request_files =
                 [
@@ -294,13 +288,13 @@ class Client
 
         $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt, 'callback_param' => json_encode($callback_param)];
 
-        if (!is_null($callback)) {
+        if (! is_null($callback)) {
             $request_data['callback_url'] = $callback;
-        } elseif (!is_null($this->callback_url)) {
+        } elseif (! is_null($this->callback_url)) {
             $request_data['callback_url'] = $this->callback_url;
         }
 
-        if (!is_null($version)) {
+        if (! is_null($version)) {
             $request_data['version'] = $version;
         }
         print_r($request_data);
@@ -341,6 +335,7 @@ class Client
                 $response[$key]->algorithm_id = $algorithmId;
             }
         }
+
         return $this->mapCollection('Version', $response);
     }
 
@@ -354,8 +349,10 @@ class Client
     public function getAlgorithmVersion($algorithmId, $versionId)
     {
         $response = $this->http->GET("/algorithms/{$algorithmId}/versions/{$versionId}");
-        if (is_object($response))
+        if (is_object($response)) {
             $response->algorithm_id = $algorithmId;
+        }
+
         return $this->mapResource('Version', $response);
     }
 
@@ -369,8 +366,10 @@ class Client
      */
     public function getTemplate(string $algorithmId, string $type = 'input', $version = null): bool
     {
-        $response = $this->http->GET("/algorithms/{$algorithmId}/template",
-            ['type' => $type, 'version' => $version]);
+        $response = $this->http->GET(
+            "/algorithms/{$algorithmId}/template",
+            ['type' => $type, 'version' => $version]
+        );
         if ($this->http->getHttpCode() == 200) {
             // to download the file.
             header("Content-type: application/json");
@@ -395,8 +394,10 @@ class Client
      */
     public function getGraph(string $algorithm_id, string $type = 'input', $version = null): bool
     {
-        $response = $this->http->GET("/algorithms/{$algorithm_id}/graph",
-            ['type' => $type, 'version' => $version]);
+        $response = $this->http->GET(
+            "/algorithms/{$algorithm_id}/graph",
+            ['type' => $type, 'version' => $version]
+        );
         if ($this->http->getHttpCode() == 200) {
             // to download the file.
             header("Content-type: image/png");

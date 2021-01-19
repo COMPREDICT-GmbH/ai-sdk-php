@@ -6,7 +6,6 @@ use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Resources\Algorithm;
 use Compredict\API\Algorithms\Resources\Algorithms;
 use Dotenv\Dotenv;
-use Exception;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase

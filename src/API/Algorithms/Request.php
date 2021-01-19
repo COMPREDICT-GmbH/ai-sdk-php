@@ -290,7 +290,7 @@ class Request
             array_push($this->headers, 'Content-Type: application/json');
             $this->postFields = $fields;
         } else {
-            if (!is_array($files['features'])) {
+            if (! is_array($files['features'])) {
                 if (get_class($files['features']) == "CURLFile") {
                     array_push($this->headers, "Content-Type: multipart/form-data");
                     $fields ['features'] = $files['features'];
@@ -328,15 +328,18 @@ class Request
      */
     public function buildGetParameters(?array $params): string
     {
-        if (is_null($params))
+        if (is_null($params)) {
             return "";
+        }
 
         $query = "?";
         foreach ($params as $key => $value) {
-            if (is_null($value))
+            if (is_null($value)) {
                 continue;
+            }
             $query = $query . $key . "=" . $value . "&";
         }
+
         return ($query == "?") ? "" : rtrim($query, "&");
     }
 
@@ -411,7 +414,7 @@ class Request
      */
     public function checkResponseForContent($content = '')
     {
-        if ($this->httpCode == 200 && !empty($this->responseBody)) {
+        if ($this->httpCode == 200 && ! empty($this->responseBody)) {
             if (strpos($this->responseBody, $content) !== false) {
                 return true;
             }

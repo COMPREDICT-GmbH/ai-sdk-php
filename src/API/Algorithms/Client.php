@@ -2,7 +2,9 @@
 
 namespace Compredict\API\Algorithms;
 
-use \Exception as Exception;
+use Exception as Exception;
+use stdClass;
+use UnexpectedValueException;
 
 class Client
 {
@@ -45,22 +47,22 @@ class Client
     /**
      * Private key to decrypt messages.
      *
-     * @var Openssl RSA Resource
+     * @var resource|false RSA Resource
      */
     protected $ppk = false;
 
     public function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "")
     {
         if (! isset($token) || strlen($token) !== 40) {
-            throw new Exception("A 40 character API Key must be provided");
+            throw new UnexpectedValueException("A 40 character API Key must be provided");
         }
 
         if (! is_null($callback_url) && ! filter_var($callback_url, FILTER_VALIDATE_URL)) {
-            throw new Exception("URL provided is not valid");
+            throw new UnexpectedValueException("URL provided is not valid");
         }
 
         $this->api_key = $token;
-        $this->http = new Request($this->getBaseUrl() . $this->APIVersion);
+        $this->http = new Request($this->baseURL . $this->APIVersion);
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
 
@@ -72,13 +74,15 @@ class Client
     /**
      * Get the callback url.
      */
-    public function getCallbackUrl()
+    public function getCallbackUrl(): ?string
     {
         return $this->callback_url;
     }
 
     /**
      * Set the callback url.
+     * @param $callback_url
+     * @throws Exception
      */
     public function setCallbackUrl($callback_url)
     {
@@ -107,24 +111,24 @@ class Client
      *
      * @return string
      */
-    public function getLastError()
+    public function getLastError(): string
     {
         return $this->http->getLastError();
     }
 
     /**
-     * @param  Boolean option to enable/disable SSL.
+     * @param Boolean option to enable/disable SSL.
      */
     public function verifyPeer($option)
     {
-        return $this->http->verifyPeer($option);
+        $this->http->verifyPeer($option);
     }
 
     /**
      * Set the url to COMPREDICT AIC server.
      * @param String $url
      */
-    public function setURL($url)
+    public function setURL(string $url)
     {
         $this->http->setURL($url);
     }
@@ -133,7 +137,7 @@ class Client
      * Get the url to COMPREDICT AIC server
      * @return String URL
      */
-    public function getURL()
+    public function getURL(): string
     {
         return $this->http->getURL();
     }
@@ -144,7 +148,7 @@ class Client
      * @param string $keyPath path to the key .ppm file.
      * @param string $passphrase for the given key.
      */
-    public function setPrivateKey($keyPath, $passphrase = "")
+    public function setPrivateKey(string $keyPath, $passphrase = "")
     {
         $fp = fopen($keyPath, 'r');
         $ppk_str = fread($fp, 8192);
@@ -153,33 +157,13 @@ class Client
     }
 
     /**
-     * Set base URL.
-     *
-     * @param  string  $url.
-    */
-    public function setBaseUrl(string $url)
-    {
-        $this->baseURL = $url;
-    }
-
-    /**
-     * Get base URL.
-     *
-     * @return string
-    */
-    public function getBaseUrl()
-    {
-        return $this->baseURL;
-    }
-
-    /**
      * Map a single object to a resource class.
      *
      * @param string $resource name of the resource class
-     * @param \stdClass $object
-     * @return Resource
+     * @param stdClass|false|string $object
+     * @return Resource | false
      */
-    private function mapResource($resource, $object)
+    private function mapResource(string $resource, $object)
     {
         if ($object === false || is_string($object)) {
             return $object;
@@ -194,9 +178,8 @@ class Client
     /**
      * Internal method to wrap items in a collection to resource classes.
      *
-     * @param  string  $resource  name of the resource class
-     * @param  $object  object collection
-     *
+     * @param string $resource name of the resource class
+     * @param stdClass|false|string $object
      * @return array|false|string
      */
     private function mapCollection(string $resource, $object)
@@ -210,7 +193,7 @@ class Client
         $array_of_resources = [];
 
         foreach ($object as $res) {
-            array_push($array_of_resources, new $resource_class($object, $this));
+            array_push($array_of_resources, new $resource_class($res, $this));
         }
 
         return $array_of_resources;
@@ -234,10 +217,10 @@ class Client
     /**
      * Returns the default Resource of algorithm.
      *
-     * @param String $algorithm_id.
+     * @param String $algorithm_id .
      * @return Resource/Algorithm object.
      */
-    public function getAlgorithm($algorithm_id)
+    public function getAlgorithm(string $algorithm_id)
     {
         $response = $this->http->GET("/algorithms/{$algorithm_id}");
 
@@ -250,7 +233,7 @@ class Client
      * @param String $task_id
      * @return Resource/Algorithm object.
      */
-    public function getTaskResult($task_id)
+    public function getTaskResult(string $task_id)
     {
         $response = $this->http->GET("/algorithms/tasks/{$task_id}");
 
@@ -263,7 +246,7 @@ class Client
      * @param String $task_id
      * @return Resource/Algorithm object.
      */
-    public function cancelTask($task_id)
+    public function cancelTask(string $task_id)
     {
         $response = $this->http->DELETE("/algorithms/tasks/{$task_id}");
 
@@ -273,19 +256,19 @@ class Client
     /**
      * Run the algorithm on the given data.
      *
-     * @param  String  $algorithm_id
-     * @param  Array | String  $data  to predict
-     * @param  Boolean  $evaluate  whether to apply standard evaluation or not.
-     * @param  Boolean  $encrypt  to indicate whether the sent data is encrypt or not.
-     * @param  null  $callback_param  Additional parameters that a requester will receive in the callback url or
+     * @param String $algorithm_id
+     * @param array | String $data to predict
+     * @param Boolean $evaluate whether to apply standard evaluation or not.
+     * @param Boolean $encrypt to indicate whether the sent data is encrypt or not.
+     * @param null $callback_param Additional parameters that a requester will receive in the callback url or
      * when requesting the results.
-     * @param  null  $callback  URL that overrides the main $this->callback for receiving endpoint of data.
+     * @param null $callback URL that overrides the main $this->callback for receiving endpoint of data.
      * @param null | String $version algorithm's version to be requested, if null, then latest version is requested.
-     * @param  string  $file_content_type
+     * @param string $file_content_type
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
     public function getPrediction(
-        $algorithm_id,
+        string $algorithm_id,
         $data,
         $evaluate = true,
         $encrypt = false,
@@ -314,8 +297,9 @@ class Client
         if (! is_null($version)) {
             $request_data['version'] = $version;
         }
+        print_r($request_data);
 
-        $response = $this->http->post("/algorithms/{$algorithm_id}/predict", $request_data, $request_files, $file_content_type);
+        $response = $this->http->POST("/algorithms/{$algorithm_id}/predict", $request_data, $request_files);
         // need to check if prediction or task.
         $resource = (isset($response->job_id)) ? 'Task' : 'Prediction';
 
@@ -325,7 +309,7 @@ class Client
     /**
      * Convert the evaluate parameter to the correct format before sending the request.
      *
-     * @param  bool|array|string $evaluate parameter
+     * @param bool|array|string $evaluate parameter
      * @return bool|string
      */
     protected function _process_evaluate($evaluate)
@@ -338,18 +322,58 @@ class Client
     }
 
     /**
+     * Get all versions of the specified algorithm.
+     *
+     * @param $algorithmId
+     * @return array|false|string
+     */
+    public function getAlgorithmVersions($algorithmId)
+    {
+        $response = $this->http->GET("/algorithms/{$algorithmId}/versions");
+        if (is_array($response)) {
+            foreach ($response as $key => $algorithm) {
+                $response[$key]->algorithm_id = $algorithmId;
+            }
+        }
+
+        return $this->mapCollection('Version', $response);
+    }
+
+    /**
+     * Get a specific version for a specific algorithm.
+     *
+     * @param $algorithmId
+     * @param $versionId
+     * @return false|Resource|string
+     */
+    public function getAlgorithmVersion($algorithmId, $versionId)
+    {
+        $response = $this->http->GET("/algorithms/{$algorithmId}/versions/{$versionId}");
+        if (is_object($response)) {
+            $response->algorithm_id = $algorithmId;
+        }
+
+        return $this->mapResource('Version', $response);
+    }
+
+    /**
      * Downloads the detailed file.
      *
-     * @param String $algorithm_id
+     * @param String $algorithmId
      * @param String $type describes the file type whether `input` or `output`
+     * @param null | String $version specify the template of the version you would like to query.
+     * @return bool
      */
-    public function getTemplate($algorithm_id, $type = 'input')
+    public function getTemplate(string $algorithmId, string $type = 'input', $version = null): bool
     {
-        $response = $this->http->GET("/algorithms/{$algorithm_id}/template?type={$type}");
+        $response = $this->http->GET(
+            "/algorithms/{$algorithmId}/template",
+            ['type' => $type, 'version' => $version]
+        );
         if ($this->http->getHttpCode() == 200) {
             // to download the file.
             header("Content-type: application/json");
-            header("Content-Disposition: attachment; filename={$algorithm_id}-{$type}-template.json");
+            header("Content-Disposition: attachment; filename={$algorithmId}-{$type}-template.json");
             header("Pragma: no-cache");
             header("Expires: 0");
             echo $response;
@@ -365,10 +389,15 @@ class Client
      *
      * @param String $algorithm_id
      * @param String $type describes the file type whether `input` or `output`
+     * @param null | string $version
+     * @return bool
      */
-    public function getGraph($algorithm_id, $type = 'input')
+    public function getGraph(string $algorithm_id, string $type = 'input', $version = null): bool
     {
-        $response = $this->http->GET("/algorithms/{$algorithm_id}/graph?type={$type}");
+        $response = $this->http->GET(
+            "/algorithms/{$algorithm_id}/graph",
+            ['type' => $type, 'version' => $version]
+        );
         if ($this->http->getHttpCode() == 200) {
             // to download the file.
             header("Content-type: image/png");
@@ -384,11 +413,14 @@ class Client
     }
 
     /**
-     * @param  base64_encoded string holds the encrypted message.
-     * @param  int Chunking by bytes to feed to the decryptor algorithm.
+     * Decrypt the received message from AI Core.
+     *
+     * @param string base64_encoded holds the encrypted message.
+     * @param int Chunking by bytes to feed to the decryptor algorithm.
      * @return String decrypted message.
+     * @throws Exception
      */
-    public function RSADecrypt($encrypted_msg, $chunk_size = 256)
+    public function RSADecrypt($encrypted_msg): string
     {
         if (is_null($this->ppk)) {
             throw new Exception("Returned message is encrypted while you did not provide private key!");

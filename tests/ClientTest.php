@@ -6,7 +6,6 @@ use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Resources\Algorithm;
 use Compredict\API\Algorithms\Resources\Algorithms;
 use Dotenv\Dotenv;
-use Exception;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
@@ -32,11 +31,11 @@ class ClientTest extends TestCase
     /** @test */
     public function it_will_require_a_token_with_40_character_length()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(\UnexpectedValueException::class);
 
         try {
             new Client('not-a-40-character-token');
-        } catch (Exception $e) {
+        } catch (\UnexpectedValueException $e) {
             $this->assertEquals('A 40 character API Key must be provided', $e->getMessage());
 
             throw $e;

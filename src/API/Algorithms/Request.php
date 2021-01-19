@@ -12,6 +12,8 @@
 
 namespace Compredict\API\Algorithms;
 
+use stdClass;
+
 class Request
 {
     const POST = 'POST';
@@ -63,7 +65,7 @@ class Request
     /**
      * Response body.
      *
-     * @var std class
+     * @var stdClass
      **/
     private $responseBody;
 
@@ -96,16 +98,16 @@ class Request
     private $url;
 
     /**
-     * Curl isntance.
+     * Curl instance.
      *
-     * @var curl
+     * @var resource
      **/
     private $ch;
 
     /**
      * Last error from the server.
      *
-     * @var Std class
+     * @var StdClass
      **/
     private $lastError;
 
@@ -125,8 +127,9 @@ class Request
 
     /**
      * Called when the Request object is created.
+     * @param string $url
      */
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->url = $url;
         $this->lastError = false;
@@ -135,9 +138,9 @@ class Request
     /**
      * Set the url to COMPREDICT AIC server.
      *
-     * @param  String  $url
+     * @param String $url
      */
-    public function setURL($url)
+    public function setURL(string $url)
     {
         $this->url = $url;
     }
@@ -155,12 +158,9 @@ class Request
     /**
      * Set the username and password for HTTP basic authentication.
      *
-     * @param  string  $username
-     *   Username for basic authentication.
-     * @param  string  $password
-     *   Password for basic authentication.
+     * @param string $token
      */
-    public function setToken($token)
+    public function setToken(string $token)
     {
         $this->token = $token;
     }
@@ -178,7 +178,7 @@ class Request
      * <p><em>Note that this doesn't use the builtin CURL_FAILONERROR option,
      * as this fails fast, making the HTTP body and headers inaccessible.</em></p>
      *
-     * @param  bool  $option  the new state of this feature
+     * @param bool $option the new state of this feature
      */
     public function failOnError($option = true)
     {
@@ -197,10 +197,10 @@ class Request
     /**
      * Enable cookies.
      *
-     * @param  string  $cookie_path
+     * @param string $cookie_path
      *   Absolute path to a txt file where cookie information will be stored.
      */
-    public function enableCookies($cookie_path)
+    public function enableCookies(string $cookie_path)
     {
         $this->cookiesEnabled = true;
         $this->cookiePath = $cookie_path;
@@ -216,7 +216,7 @@ class Request
     }
 
     /**
-     * @param  Boolean option to enable/disable ssl
+     * @param Boolean option to enable/disable ssl
      */
     public function verifyPeer($option)
     {
@@ -226,7 +226,7 @@ class Request
     /**
      * Set timeout.
      *
-     * @param  int  $timeout
+     * @param int $timeout
      *   Timeout value in seconds.
      */
     public function setTimeout($timeout = 15)
@@ -248,8 +248,7 @@ class Request
     /**
      * Set connect timeout.
      *
-     * @param  int  $connect_timeout
-     *   Timeout value in seconds.
+     * @param int $connectTimeout
      */
     public function setConnectTimeout($connectTimeout = 10)
     {
@@ -270,10 +269,10 @@ class Request
     /**
      * Set a request type (by default, cURL will send a GET request).
      *
-     * @param  string  $type
+     * @param string $type
      *   GET, POST, DELETE, PUT, etc. Any standard request type will work.
      */
-    public function setRequestType($type)
+    public function setRequestType(string $type)
     {
         $this->requestType = $type;
     }
@@ -281,8 +280,8 @@ class Request
     /**
      * Set the POST fields (only used if $this->requestType is 'POST').
      *
-     * @param  array       $fields
-     * @param  array|null  $files
+     * @param array $fields
+     * @param array|null $files
      *   An array of fields that will be sent with the POST request.
      */
     public function setPostFields($fields = [], $files = null, $file_content_type = "application/json")
@@ -298,28 +297,50 @@ class Request
                     $this->postFields = $fields;
                 }
             } else {
-                $delimiter = '-------------'.uniqid();
+                $delimiter = '-------------' . uniqid();
                 $data = '';
 
                 foreach ($fields as $name => $content) {
-                    $data .= "--".$delimiter."\r\n"
-                        .'Content-Disposition: form-data; name="'.$name."\"\r\n\r\n"
-                        .$content."\r\n";
+                    $data .= "--" . $delimiter . "\r\n"
+                        . 'Content-Disposition: form-data; name="' . $name . "\"\r\n\r\n"
+                        . $content . "\r\n";
                 }
 
                 foreach ($files as $name => $content) {
-                    $data .= "--".$delimiter."\r\n"
-                        .'Content-Disposition: form-data; name="'.$name.'"; filename="'.$content['fileName'].'"'."\r\n"
-                        .'Content-Type: '.$file_content_type."\r\n\r\n"
-                        .$content['fileContent']."\r\n";
+                    $data .= "--" . $delimiter . "\r\n"
+                        . 'Content-Disposition: form-data; name="' . $name . '"; filename="' . $content['fileName'] . '"' . "\r\n"
+                        . 'Content-Type: ' . $file_content_type . "\r\n\r\n"
+                        . $content['fileContent'] . "\r\n";
                 }
 
-                $data .= "--".$delimiter."--\r\n";
-                array_push($this->headers, 'Content-Type: multipart/form-data; boundary='.$delimiter);
-                array_push($this->headers, 'Content-Length: '.strlen($data));
+                $data .= "--" . $delimiter . "--\r\n";
+                array_push($this->headers, 'Content-Type: multipart/form-data; boundary=' . $delimiter);
+                array_push($this->headers, 'Content-Length: ' . strlen($data));
                 $this->postFields = $data;
             }
         }
+    }
+
+    /**
+     * Build the query string based on the parameters sent.
+     * @param array|null $params key contains the key of get param and value will be the associated value, if value is null, then it is neglected.
+     * @return String         Get query string.
+     */
+    public function buildGetParameters(?array $params): string
+    {
+        if (is_null($params)) {
+            return "";
+        }
+
+        $query = "?";
+        foreach ($params as $key => $value) {
+            if (is_null($value)) {
+                continue;
+            }
+            $query = $query . $key . "=" . $value . "&";
+        }
+
+        return ($query == "?") ? "" : rtrim($query, "&");
     }
 
     /**
@@ -336,7 +357,7 @@ class Request
     /**
      * Get the response header.
      *
-     * @return string
+     * @return array
      *   Response header.
      */
     public function getHeader()
@@ -385,7 +406,7 @@ class Request
      * This method should not be called until after execute(), and will only check
      * for the content if the response code is 200 OK.
      *
-     * @param  string  $content
+     * @param string $content
      *   String for which the response will be checked.
      *
      * @return bool
@@ -405,15 +426,15 @@ class Request
     /**
      * Pipeline for POST request.
      *
-     * @param  string      $endpoint  completes the url.
-     * @param  string      $data      json encoded.
-     * @param  array|null  $files
+     * @param string $endpoint completes the url.
+     * @param string | array $data json encoded.
+     * @param array|null $files
      *
-     * @return std class|false the result from the endpoint
-     **/
-    public function POST($endpoint, $data, $files = null)
+     * @return stdClass|false the result from the endpoint
+     */
+    public function POST(string $endpoint, $data, $files = null)
     {
-        $address = $this->url.$endpoint;
+        $address = $this->url . $endpoint;
         $this->setRequestType(Request::POST);
         $this->setPostFields($data, $files);
 
@@ -423,13 +444,14 @@ class Request
     /**
      * Pipeline for GET request.
      *
-     * @param  string  $endpoint  completes the url.
-     *
-     * @return std class|false the result from the endpoint
-     **/
-    public function GET($endpoint)
+     * @param string $endpoint completes the url.
+     * @param null | array $queryParameters
+     * @return stdClass|false the result from the endpoint
+     */
+    public function GET(string $endpoint, $queryParameters = null)
     {
-        $address = $this->url.$endpoint;
+        $query = $this->buildGetParameters($queryParameters);
+        $address = $this->url . $endpoint . $query;
         $this->setRequestType(Request::GET);
 
         return $this->execute($address);
@@ -438,13 +460,13 @@ class Request
     /**
      * Pipeline for DELETE request.
      *
-     * @param  string  $endpoint  completes the url.
+     * @param string $endpoint completes the url.
      *
-     * @return std class|false the result from the endpoint
-     **/
-    public function DELETE($endpoint)
+     * @return stdClass|false the result from the endpoint
+     */
+    public function DELETE(string $endpoint)
     {
-        $address = $this->url.$endpoint;
+        $address = $this->url . $endpoint;
         $this->setRequestType(Request::DELETE);
 
         return $this->execute($address);
@@ -455,17 +477,20 @@ class Request
      *
      * After this method is completed, the response body, headers, latency, etc.
      * will be populated, and can be accessed with the appropriate methods.
+     *
+     * @param $address
+     * @return stdClass|false
+     * @throws ClientError
+     * @throws NetworkError
+     * @throws ServerError
      */
-    private function execute($address)
+    private function execute(string $address)
     {
-        // Set a default latency value.
-        $latency = 0;
-
         // Set up cURL options.
         $this->ch = curl_init();
         // If there are basic authentication credentials, use them.
         if (isset($this->token)) {
-            array_push($this->headers, 'Authorization: Token '.$this->token);
+            array_push($this->headers, 'Authorization: Token ' . $this->token);
         }
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
         // If cookies are enabled, use them.

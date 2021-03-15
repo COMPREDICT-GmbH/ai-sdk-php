@@ -297,7 +297,6 @@ class Client
         if (! is_null($version)) {
             $request_data['version'] = $version;
         }
-        print_r($request_data);
 
         $response = $this->http->POST("/algorithms/{$algorithm_id}/predict", $request_data, $request_files);
         // need to check if prediction or task.

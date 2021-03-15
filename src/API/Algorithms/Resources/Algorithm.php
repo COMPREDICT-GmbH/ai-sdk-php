@@ -23,7 +23,7 @@ class Algorithm extends Resource
         parent::__construct($object, $client);
         $this->last_result = null;
         $versions = [];
-        print_r($this->versions);
+
         foreach ($this->get_versions() as $key => $version) {
             $version->algorithm_id = $this->id;
             array_push($versions, new Version($version, $this->client));
@@ -39,7 +39,6 @@ class Algorithm extends Resource
         $callback = null,
         $version = null
     ) {
-        echo "version " . $version . " version";
         $this->last_result = $this->client->getPrediction(
             $this->id,
             $data,

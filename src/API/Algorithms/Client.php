@@ -28,7 +28,7 @@ class Client
      *
      * @var string
      **/
-    protected $baseURL = 'https://aic.compredict.de/api/';
+    protected $baseURL = 'https://core.compredict.ai/api/';
 
     /**
      * API version

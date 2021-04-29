@@ -109,9 +109,9 @@ class Client
      * Get error message returned from the last API request if
      * failOnError is false (default).
      *
-     * @return string
+     * @return mixed json decoded response
      */
-    public function getLastError(): string
+    public function getLastError()
     {
         return $this->http->getLastError();
     }

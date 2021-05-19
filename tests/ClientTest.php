@@ -37,7 +37,6 @@ class ClientTest extends TestCase
             new Client('not-a-40-character-token');
         } catch (\UnexpectedValueException $e) {
             $this->assertEquals('A 40 character API Key must be provided', $e->getMessage());
-
             throw $e;
         }
     }

@@ -2,7 +2,7 @@
     "name": "compredict/ai-sdk",
     "type": "library",
     "description": "Enables PHP applications to communicate with Compredict's AI Core API.",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "keywords": ["api", "rest", "compredict", "AI", "sdk"],
     "homepage": "https://compredict.ai",
     "license": "MIT",

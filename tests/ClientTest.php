@@ -3,60 +3,192 @@
 namespace Compredict\Tests;
 
 use Compredict\API\Algorithms\Client;
+use Compredict\API\Algorithms\Request;
 use Compredict\API\Algorithms\Resources\Algorithm;
 use Compredict\API\Algorithms\Resources\Algorithms;
-use Dotenv\Dotenv;
+use Compredict\API\Algorithms\Resources\Task;
+use Compredict\API\Algorithms\Resources\Prediction;
+use Compredict\API\Algorithms\Resources\Version;
 use PHPUnit\Framework\TestCase;
 
-class ClientTest extends TestCase
-{
+class ClientTest extends TestCase{
+
     public $client;
+
+    public const RESPONSES_PATH = __DIR__ . '/responses/';
 
     public function setUp(): void
     {
-        if (file_exists(dirname(__DIR__) . '/.env')) {
-            (new Dotenv(dirname(__DIR__), '.env'))->load();
-        }
+        $this->httpMock = $this->createMock(Request::class);
 
-        $this->client = new Client(getenv('COMPREDICT_AI_CORE_KEY'));
-        $this->client->setURL('https://b.aic.compredict.de/api/v1');
+        $fakeToken = "xXzzczhAiF2kdK1sv8bD4Wv2aQJfV4PSxMXCGOjj";
+
+        $this->client = new Client($fakeToken, null, null, "", $this->httpMock);
+        
+    }
+    /**
+     * @test
+     */
+    public function testGetAlgorithm() {
+
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithm.json'));
+        
+        $this->httpMock->method('GET')->willReturn($bodyResponse);
+
+        $retrievedAlgorithm = $this->client->getAlgorithm("dummy-test-model");
+
+        $expectedName = "Dummy Test Model";
+
+        $this->assertInstanceOf(Algorithm::class, $retrievedAlgorithm);
+        $this->assertSame($expectedName, $retrievedAlgorithm->name);
     }
 
-    /** @test */
-    public function it_will_return_a_compredict_client()
-    {
-        $this->assertInstanceOf(Client::class, $this->client);
+    /**
+     * @test
+     */
+    public function testGetAlgorithms() {
+        
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithms.json'));
+
+        $this->httpMock->method('GET')->willReturn($bodyResponse);
+
+        $retrievedAlgorithms = $this->client->getAlgorithms();
+
+        $expectedAlgorithm = $retrievedAlgorithms->__get('another-dummy-test');
+
+        $this->assertInstanceOf(Algorithms::class, $retrievedAlgorithms);
+        $this->assertSame($expectedAlgorithm->name, 'Another Dummy Test');
     }
 
-    /** @test */
-    public function it_will_require_a_token_with_40_character_length()
-    {
-        $this->expectException(\UnexpectedValueException::class);
+    /**
+     * @test
+     */
+    public function testGetTaskResult() {
 
-        try {
-            new Client('not-a-40-character-token');
-        } catch (\UnexpectedValueException $e) {
-            $this->assertEquals('A 40 character API Key must be provided', $e->getMessage());
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'taskResult.json'));
 
-            throw $e;
-        }
+        $this->httpMock->method('GET')->willReturn($bodyResponse);
+
+        $jobId = 'c751dfb7-56cc-4504-8fb9-19b0a79d9197';
+
+        $retrievedTaskResult = $this->client->getTaskResult($jobId);
+
+        $this->assertInstanceOf(Task::class, $retrievedTaskResult);
+        $this->assertSame($retrievedTaskResult->status, 'Finished');
     }
 
-    /** @test */
-    public function it_will_return_an_array_of_algorithms()
-    {
-        $algorithms = $this->client->getAlgorithms();
+    /**
+     * @test
+     */
+    public function testCancelTask() {
 
-        $this->assertIsArray($algorithms->algorithms);
-        $this->assertInstanceOf(Algorithms::class, $algorithms);
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'deletedTask.json'));
+
+        $this->httpMock->method('DELETE')->willReturn($bodyResponse);
+
+        $jobId = 'c751dfb7-56cc-4504-8fb9-19b0a79d9197';
+
+        $deletedTask = $this->client->cancelTask($jobId);
+
+        $this->assertInstanceOf(Task::class, $deletedTask);
+        $this->assertSame(true, $deletedTask->is_canceled);
     }
 
-    /** @test */
-    public function it_will_return_an_algorithm_based_on_id()
-    {
-        $observerAlgorithm = $this->client->getAlgorithm('observer');
+    /**
+     * @test
+     */
+    public function testGetPrediction() {
 
-        $this->assertEquals('observer', $observerAlgorithm->id);
-        $this->assertInstanceOf(Algorithm::class, $observerAlgorithm);
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'predictionResult.json'));
+
+        $this->httpMock->method('POST')->willReturn($bodyResponse);
+
+        $algorithmId = 'dummy-test-model';
+        $data = file_get_contents(self::RESPONSES_PATH . 'features.json');
+
+        $prediction = $this->client->getPrediction($algorithmId, $data);
+
+        $this->assertInstanceOf(Prediction::class, $prediction);
+        $this->assertSame(false, $prediction->is_encrypted);
+    }
+    
+    /**
+     * @test
+     */
+    public function testGetPredictionSentToQueue(){
+
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'jobId.json'));
+        $this->httpMock->method('POST')->willReturn($bodyResponse);
+
+        $algorithmId = 'dummy-test-model';
+        $data = file_get_contents(self::RESPONSES_PATH . 'features.json');
+
+        $prediction = $this->client->getPrediction($algorithmId, $data);
+
+        $this->assertInstanceOf(Task::class, $prediction);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetAlgorithmVersions(){
+
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithmVersions.json'));
+        $this->httpMock->method('GET')->willReturn($bodyResponse);
+
+        $algorithmId = 'dummy-test-model';
+
+        $versions = $this->client->getAlgorithmVersions($algorithmId);
+
+        $this->assertInstanceOf(Version::class, $versions[0]);
+        $this->assertSame("1.1.1", $versions[0]->version);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetAlgorithmVersion() {
+
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithmVersion.json'));
+        $this->httpMock->method('GET')->willReturn($bodyResponse);
+
+        $algorithmId = 'dummy-test-model';
+        $versionId = "1.1.1";
+
+        $version = $this->client->getAlgorithmVersion($algorithmId, $versionId);
+
+        $expected = "Request will be escalated to queue if number of samples are >= 0.";
+
+        $this->assertInstanceOf(Version::class, $version);
+        $this->assertSame($expected, $version->results);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTemplate() {
+
+        $this->httpMock->expects($this->once())->method('getHttpCode');
+
+        $algorithmId = "dummy-model";
+
+        $result = $this->client->getTemplate($algorithmId);
+
+        $this->assertSame(false, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetGraph() {
+
+        $this->httpMock->expects($this->once())->method('getHttpCode');
+
+        $algorithmId = "dummy-model";
+
+        $result = $this->client->getGraph($algorithmId);
+
+        $this->assertSame(false, $result);
     }
 }
+

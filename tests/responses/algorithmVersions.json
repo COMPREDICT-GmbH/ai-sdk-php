@@ -1,0 +1,96 @@
+[
+    {
+        "version": "1.1.1",
+        "results": "Request will be escalated to queue if number of samples are >= 0.",
+        "change_description": "",
+        "features_format": [
+            {
+                "input_name": "data",
+                "description": "Contains the training data.",
+                "type": "dict",
+                "mandatory": true,
+                "children": [
+                    {
+                        "input_name": "damage",
+                        "description": "Accumulated damage of the component.",
+                        "type": "list",
+                        "mandatory": false,
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "input_name": "parameters",
+                "description": "Algorithms parameters.",
+                "type": "dict",
+                "mandatory": false,
+                "children": [
+                    {
+                        "input_name": "km_to_forecast",
+                        "description": "How many KM to forecast in the future. (Default: until failure)",
+                        "type": "numeric",
+                        "mandatory": false,
+                        "children": []
+                    }
+                ]
+            }
+        ],
+        "output_format": [
+            {
+                "input_name": "predictions",
+                "type": "list",
+                "children": [],
+                "mandatory": true,
+                "description": "blah"
+            }
+        ],
+        "monitoring_tools": []
+    },
+    {
+        "version": "1.0.0",
+        "results": "Request will be escalated to queue.",
+        "change_description": "",
+        "features_format": [
+            {
+                "input_name": "data",
+                "description": "Contains the training data.",
+                "type": "dict",
+                "mandatory": true,
+                "children": [
+                    {
+                        "input_name": "damage",
+                        "description": "Accumulated damage of the component.",
+                        "type": "list",
+                        "mandatory": true,
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "input_name": "parameters",
+                "description": "Algorithms parameters.",
+                "type": "dict",
+                "mandatory": false,
+                "children": [
+                    {
+                        "input_name": "km_to_forecast",
+                        "description": "How many KM to forecast in the future. (Default: until failure)",
+                        "type": "numeric",
+                        "mandatory": false,
+                        "children": []
+                    }
+                ]
+            }
+        ],
+        "output_format": [
+            {
+                "input_name": "output",
+                "type": "str",
+                "children": [],
+                "mandatory": false,
+                "description": "blah"
+            }
+        ],
+        "monitoring_tools": []
+    }
+]

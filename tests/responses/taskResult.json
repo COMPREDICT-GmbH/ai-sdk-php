@@ -1,0 +1,22 @@
+{
+    "job_id": "c751dfb7-56cc-4504-8fb9-19b0a79d9197",
+    "status": "Finished",
+    "success": true,
+    "results": {
+        "predictions": [
+            0.984866962700367
+        ]  
+    },
+    "evaluations": [],
+    "is_encrypted": false,
+    "monitors": {
+        "Range#mileage": {
+            "is_alarmed": true,
+            "success": true,
+            "readings": {
+                "n_maximum": 11,
+                "n_minimum": 0
+            }
+        }
+    }
+}

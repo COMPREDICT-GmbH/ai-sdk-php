@@ -6,13 +6,13 @@ use Compredict\API\Algorithms\Client;
 use Compredict\API\Algorithms\Request;
 use Compredict\API\Algorithms\Resources\Algorithm;
 use Compredict\API\Algorithms\Resources\Algorithms;
-use Compredict\API\Algorithms\Resources\Task;
 use Compredict\API\Algorithms\Resources\Prediction;
+use Compredict\API\Algorithms\Resources\Task;
 use Compredict\API\Algorithms\Resources\Version;
 use PHPUnit\Framework\TestCase;
 
-class ClientTest extends TestCase{
-
+class ClientTest extends TestCase
+{
     public $client;
 
     public const RESPONSES_PATH = __DIR__ . '/responses/';
@@ -24,13 +24,12 @@ class ClientTest extends TestCase{
         $fakeToken = "xXzzczhAiF2kdK1sv8bD4Wv2aQJfV4PSxMXCGOjj";
 
         $this->client = new Client($fakeToken, null, null, "", $this->httpMock);
-        
     }
     /**
      * @test
      */
-    public function testGetAlgorithm() {
-
+    public function testGetAlgorithm()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithm.json'));
         
         $this->httpMock->method('GET')->willReturn($bodyResponse);
@@ -46,8 +45,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetAlgorithms() {
-        
+    public function testGetAlgorithms()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithms.json'));
 
         $this->httpMock->method('GET')->willReturn($bodyResponse);
@@ -63,8 +62,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetTaskResult() {
-
+    public function testGetTaskResult()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'taskResult.json'));
 
         $this->httpMock->method('GET')->willReturn($bodyResponse);
@@ -80,8 +79,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testCancelTask() {
-
+    public function testCancelTask()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'deletedTask.json'));
 
         $this->httpMock->method('DELETE')->willReturn($bodyResponse);
@@ -97,8 +96,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetPrediction() {
-
+    public function testGetPrediction()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'predictionResult.json'));
 
         $this->httpMock->method('POST')->willReturn($bodyResponse);
@@ -115,8 +114,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetPredictionSentToQueue(){
-
+    public function testGetPredictionSentToQueue()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'jobId.json'));
         $this->httpMock->method('POST')->willReturn($bodyResponse);
 
@@ -131,8 +130,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetAlgorithmVersions(){
-
+    public function testGetAlgorithmVersions()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithmVersions.json'));
         $this->httpMock->method('GET')->willReturn($bodyResponse);
 
@@ -147,8 +146,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetAlgorithmVersion() {
-
+    public function testGetAlgorithmVersion()
+    {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithmVersion.json'));
         $this->httpMock->method('GET')->willReturn($bodyResponse);
 
@@ -166,8 +165,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetTemplate() {
-
+    public function testGetTemplate()
+    {
         $this->httpMock->expects($this->once())->method('getHttpCode');
 
         $algorithmId = "dummy-model";
@@ -180,8 +179,8 @@ class ClientTest extends TestCase{
     /**
      * @test
      */
-    public function testGetGraph() {
-
+    public function testGetGraph()
+    {
         $this->httpMock->expects($this->once())->method('getHttpCode');
 
         $algorithmId = "dummy-model";
@@ -191,4 +190,3 @@ class ClientTest extends TestCase{
         $this->assertSame(false, $result);
     }
 }
-

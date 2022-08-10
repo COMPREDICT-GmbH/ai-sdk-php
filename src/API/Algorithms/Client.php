@@ -51,7 +51,7 @@ class Client
      */
     protected $ppk = false;
 
-    public function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "")
+    public function __construct($token = null, $callback_url = null, $ppk = null, $passphrase = "", $http = null)
     {
         if (! isset($token) || strlen($token) !== 40) {
             throw new UnexpectedValueException("A 40 character API Key must be provided");
@@ -62,7 +62,7 @@ class Client
         }
 
         $this->api_key = $token;
-        $this->http = new Request($this->baseURL . $this->APIVersion);
+        $this->http = $http ?? new Request($this->baseURL . $this->APIVersion);
         $this->callback_url = $callback_url;
         $this->http->setToken($token);
 

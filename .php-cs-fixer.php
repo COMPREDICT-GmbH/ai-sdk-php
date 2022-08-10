@@ -15,7 +15,7 @@ $config = new PhpCsFixer\Config();
 return $config->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
-        'imports_order' => ['sortAlgorithm' => 'alpha'],
+        'ordered_imports' => ['sortAlgorithm' => 'alpha'],
         'no_unused_imports' => true,
         'not_operator_with_successor_space' => true,
         'trailing_comma_in_multiline' => true,

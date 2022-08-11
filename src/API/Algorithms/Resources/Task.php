@@ -18,7 +18,7 @@ class Task extends Resource
         $this->success = $this->success ?? null;
         $this->error = $this->error ?? null;
         $this->is_encrypted = $this->is_encrypted ?? false;
-        $this->setResults($this->predictions, $this->evaluations);
+        $this->setResults($this->predictions, $this->evaluations, $this->monitors);
     }
 
     public function update()
@@ -42,7 +42,7 @@ class Task extends Resource
         return $this->status;
     }
 
-    protected function setResults($predictions, $evaluations)
+    protected function setResults($predictions, $evaluations, $monitors)
     {
         $this->predictions = null;
         $this->evaluations = null;

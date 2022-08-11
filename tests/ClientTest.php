@@ -176,7 +176,6 @@ class ClientTest extends TestCase
 
         $this->assertSame(false, $jobId);
         $this->assertSame(false, $lastError->status);
-        
     }
 
     /**

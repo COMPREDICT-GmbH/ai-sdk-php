@@ -74,6 +74,7 @@ class ClientTest extends TestCase
 
         $this->assertInstanceOf(Task::class, $retrievedTaskResult);
         $this->assertSame($retrievedTaskResult->status, 'Finished');
+        $this->assertObjectHasAttribute("Range#mileage", $retrievedTaskResult->monitors);
     }
 
     /**
@@ -109,6 +110,7 @@ class ClientTest extends TestCase
 
         $this->assertInstanceOf(Prediction::class, $prediction);
         $this->assertSame(false, $prediction->is_encrypted);
+        $this->assertObjectHasAttribute("Range#mileage", $prediction->monitors);
     }
     
     /**

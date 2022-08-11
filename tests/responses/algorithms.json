@@ -1,0 +1,18 @@
+[
+    {
+        "id": "dummy-damage-model",
+        "name": "Dummy Damage Model",
+        "description": "",
+        "active": true,
+        "evaluations": [],
+        "versions": []
+    },
+    {
+        "id": "another-dummy-test",
+        "name": "Another Dummy Test",
+        "description": "php sdk test",
+        "active": true,
+        "evaluations": [],
+        "versions": []
+    }
+]

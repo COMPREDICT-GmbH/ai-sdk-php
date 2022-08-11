@@ -1,0 +1,181 @@
+{
+        "id": "dummy-test-model",
+        "name": "Dummy Test Model",
+        "description": "",
+        "active": true,
+        "evaluations": [],
+        "versions": [
+            {
+                "version": "1.1.1",
+                "results": "Request will be escalated to queue if number of samples are >= 0.",
+                "change_description": "",
+                "features_format": [
+                    {
+                        "input_name": "data",
+                        "description": "Contains the training data.",
+                        "type": "dict",
+                        "mandatory": true,
+                        "children": [
+                            {
+                                "input_name": "damage",
+                                "description": "Accumulated damage of the component.",
+                                "type": "list",
+                                "mandatory": true,
+                                "children": []
+                            },
+                            {
+                                "input_name": "distance",
+                                "description": "The distance of each the damage is recorded in KM",
+                                "type": "list",
+                                "mandatory": true,
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "input_name": "parameters",
+                        "description": "Algorithms parameters.",
+                        "type": "dict",
+                        "mandatory": false,
+                        "children": [
+                            {
+                                "input_name": "km_to_forecast",
+                                "description": "How many KM to forecast in the future. (Default: until failure)",
+                                "type": "numeric",
+                                "mandatory": false,
+                                "children": []
+                            },
+                            {
+                                "input_name": "prediction_interval",
+                                "description": "Whether to compute how confidence is the prediction. (default: True)",
+                                "type": "bool",
+                                "mandatory": false,
+                                "children": []
+                            },
+                            {
+                                "input_name": "distance_interpolation",
+                                "description": "interpolate the distance per KM (default: per 200KM)",
+                                "type": "numeric",
+                                "mandatory": false,
+                                "children": []
+                            }
+                        ]
+                    }
+                ],
+                "output_format": [
+                    {
+                        "input_name": "lower_bound",
+                        "type": "list",
+                        "children": [],
+                        "mandatory": true,
+                        "description": "blah"
+                    },
+                    {
+                        "input_name": "upper_bound",
+                        "type": "list",
+                        "children": [],
+                        "mandatory": true,
+                        "description": "blah"
+                    }
+                ],
+                "monitoring_tools": [
+                    {
+                        "name": "Range",
+                        "monitored_signal": "mileage",
+                        "output_schema": {
+                            "n_maximum": {
+                                "description": "Number of times the value exceeded the maximum threshold",
+                                "type": "numeric"
+                            },
+                            "n_minimum": {
+                                "description": "Number of times the value exceeded the minimum threshold",
+                                "type": "numeric"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Range",
+                        "monitored_signal": "predictions",
+                        "output_schema": {
+                            "n_maximum": {
+                                "description": "Number of times the value exceeded the maximum threshold",
+                                "type": "numeric"
+                            },
+                            "n_minimum": {
+                                "description": "Number of times the value exceeded the minimum threshold",
+                                "type": "numeric"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "version": "1.0.0",
+                "results": "Request will be escalated to queue if number of samples are >= 0.",
+                "change_description": "",
+                "features_format": [
+                    {
+                        "input_name": "data",
+                        "description": "Contains the training data.",
+                        "type": "dict",
+                        "mandatory": true,
+                        "children": [
+                            {
+                                "input_name": "damage",
+                                "description": "Accumulated damage of the component.",
+                                "type": "list",
+                                "mandatory": true,
+                                "children": []
+                            },
+                            {
+                                "input_name": "distance",
+                                "description": "The distance of each the damage is recorded in KM",
+                                "type": "list",
+                                "mandatory": true,
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "input_name": "parameters",
+                        "description": "Algorithms parameters.",
+                        "type": "dict",
+                        "mandatory": false,
+                        "children": [
+                            {
+                                "input_name": "km_to_forecast",
+                                "description": "How many KM to forecast in the future. (Default: until failure)",
+                                "type": "numeric",
+                                "mandatory": false,
+                                "children": []
+                            },
+                            {
+                                "input_name": "prediction_interval",
+                                "description": "Whether to compute how confidence is the prediction. (default: True)",
+                                "type": "bool",
+                                "mandatory": false,
+                                "children": []
+                            },
+                            {
+                                "input_name": "distance_interpolation",
+                                "description": "interpolate the distance per KM (default: per 200KM)",
+                                "type": "numeric",
+                                "mandatory": false,
+                                "children": []
+                            }
+                        ]
+                    }
+                ],
+                "output_format": [
+                    {
+                        "input_name": "output",
+                        "type": "str",
+                        "children": [],
+                        "mandatory": false,
+                        "description": "blah"
+                    }
+                ],
+                "monitoring_tools": []
+            }
+        ]
+    }

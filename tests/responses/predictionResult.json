@@ -1,0 +1,23 @@
+{
+    "results": {
+        "predictions": [
+            0.984866962700367,
+            0.9865760062370055
+        ],
+        "mileage": [
+            130200
+        ]
+    },
+    "evaluations": [],
+    "is_encrypted": false,
+    "monitors": {
+        "Range#mileage": {
+            "is_alarmed": true,
+            "success": true,
+            "readings": {
+                "n_maximum": 11,
+                "n_minimum": 0
+            }
+        }
+    }
+}

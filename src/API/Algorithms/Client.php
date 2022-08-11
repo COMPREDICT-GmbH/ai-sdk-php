@@ -289,7 +289,7 @@ class Client
         }
 
         $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt,
-        'callback_param' => json_encode($callback_param), 'monitors' => $monitor, ];
+        'callback_param' => json_encode($callback_param), 'monitor' => $monitor, ];
 
         if (! is_null($callback)) {
             $request_data['callback_url'] = $callback;

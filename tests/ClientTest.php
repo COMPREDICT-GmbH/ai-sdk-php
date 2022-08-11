@@ -130,6 +130,38 @@ class ClientTest extends TestCase
     /**
      * @test
      */
+    public function testTrainAlgorithm()
+    {
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'jobId.json'));
+        $this->httpMock->method('POST')->willReturn($bodyResponse);
+
+        $algorithmId = 'dummy-test-model';
+        $data = file_get_contents(self::RESPONSES_PATH . 'features.json');
+
+        $task = $this->client->trainAlgorithm($algorithmId, $data);
+
+        $this->assertInstanceOf(Task::class, $task);
+        $this->assertSame("8afff4e8-8c4e-4412-b6db-cfd295503c8f", $task->job_id);
+    }
+
+    /**
+     * @test
+     */
+    public function testTrainAlgorithmWithError()
+    {
+        $this->httpMock->method('POST')->willReturn(false);
+
+        $algorithmId = 'dummy-test-model';
+        $data = file_get_contents(self::RESPONSES_PATH . 'features.json');
+
+        $jobId = $this->client->trainAlgorithm($algorithmId, $data);
+
+        $this->assertSame(false, $jobId);
+    }
+
+    /**
+     * @test
+     */
     public function testGetAlgorithmVersions()
     {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithmVersions.json'));

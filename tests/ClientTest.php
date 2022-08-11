@@ -162,6 +162,26 @@ class ClientTest extends TestCase
     /**
      * @test
      */
+    public function testTrainAlgorithmWithRetrievingLastError()
+    {
+        $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'unsuccessfulFit.json'));
+        $this->httpMock->method('getLastError')->willReturn($bodyResponse);
+        $this->httpMock->method('POST')->willReturn(false);
+
+        $algorithmId = 'dummy-test-model';
+        $data = file_get_contents(self::RESPONSES_PATH . 'features.json');
+
+        $jobId = $this->client->trainAlgorithm($algorithmId, $data);
+        $lastError = $this->client->getLastError();
+
+        $this->assertSame(false, $jobId);
+        $this->assertSame(false, $lastError->status);
+        
+    }
+
+    /**
+     * @test
+     */
     public function testGetAlgorithmVersions()
     {
         $bodyResponse = json_decode(file_get_contents(self::RESPONSES_PATH . 'algorithmVersions.json'));

@@ -306,6 +306,44 @@ class Client
     }
 
     /**
+     * Train fit algorithm with passed data.
+     *
+     * @param string $algorithm_id string identifier of the algorithm.
+     * @param array | string $data to predict.
+     * @param string $version choose the version of the algorithm you would like to call. Default is latest version.
+     * @param bool $export_new_version trained model will be exported to a new version if true.
+     *         Otherwise, the requested version will be updated. If null, then the model’s default behavior
+               will be executed. Default behaviour is controlled by the algorithm’s author.
+     * @param string $file_content_type
+     * @return Task, since all processing fit algorithms always end up in queue.
+     */
+    public function trainAlgorithm(
+        $algorithm_id,
+        $data,
+        $version = null,
+        $export_new_version = null,
+        $file_content_type = "application/json"
+    )
+    {
+        if (is_string($data)) {
+            $request_files =
+                    [
+                        'features' => curl_file_create($data, $file_content_type, 'featuers.json'),
+                    ];
+        } else {
+            $request_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+        }
+        $request_data = ['export_new_version' => $export_new_version];
+    
+        if (! is_null($version)) {
+            $request_data['version'] = $version;
+        }
+        $response = $this->http->POST("/algorithms/{$algorithm_id}/fit", $request_data, $request_files);
+
+        return $this->mapResource('Task', $response);
+    }
+
+    /**
      * Convert the evaluate parameter to the correct format before sending the request.
      *
      * @param bool|array|string $evaluate parameter

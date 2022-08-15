@@ -282,10 +282,10 @@ class Client
         if (is_string($data)) {
             $request_files =
                 [
-                    'features' => curl_file_create($data, $file_content_type, 'featuers.json'),
+                    'features' => curl_file_create($data, $file_content_type, 'features.json'),
                 ];
         } else {
-            $request_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+            $request_files = ['features' => ['fileName' => 'features.json', 'fileContent' => json_encode($data)]];
         }
 
         $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt,
@@ -318,6 +318,7 @@ class Client
      *         Otherwise, the requested version will be updated. If null, then the model’s default behavior
                will be executed. Default behaviour is controlled by the algorithm’s author.
      * @param string $file_content_type
+     * @param Boolean $monitor indicates if monitor the output results of the model or not
      * @return Task, since all processing fit algorithms always end up in queue.
      */
     public function trainAlgorithm(
@@ -325,18 +326,19 @@ class Client
         $data,
         $version = null,
         $export_new_version = null,
-        $file_content_type = "application/json"
+        $file_content_type = "application/json",
+        $monitor = true
     )
     {
         if (is_string($data)) {
             $request_files =
                     [
-                        'features' => curl_file_create($data, $file_content_type, 'featuers.json'),
+                        'features' => curl_file_create($data, $file_content_type, 'features.json'),
                     ];
         } else {
-            $request_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+            $request_files = ['features' => ['fileName' => 'features.json', 'fileContent' => json_encode($data)]];
         }
-        $request_data = ['export_new_version' => $export_new_version];
+        $request_data = ['export_new_version' => $export_new_version, 'monitor' => $monitor];
     
         if (! is_null($version)) {
             $request_data['version'] = $version;

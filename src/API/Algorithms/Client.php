@@ -265,6 +265,7 @@ class Client
      * @param null $callback URL that overrides the main $this->callback for receiving endpoint of data.
      * @param null | String $version algorithm's version to be requested, if null, then latest version is requested.
      * @param string $file_content_type
+     * @param Boolean $monitor indicates if monitor the output results of the model or not
      * @return Resource/Task if the job is escalated to the queue or Resource/Prediction if given instantly.
      */
     public function getPrediction(
@@ -275,18 +276,20 @@ class Client
         $callback_param = null,
         $callback = null,
         $version = null,
-        $file_content_type = "application/json"
+        $file_content_type = "application/json",
+        $monitor = true
     ) {
         if (is_string($data)) {
             $request_files =
                 [
-                    'features' => curl_file_create($data, $file_content_type, 'featuers.json'),
+                    'features' => curl_file_create($data, $file_content_type, 'features.json'),
                 ];
         } else {
-            $request_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+            $request_files = ['features' => ['fileName' => 'features.json', 'fileContent' => json_encode($data)]];
         }
 
-        $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt, 'callback_param' => json_encode($callback_param)];
+        $request_data = ['evaluate' => $this->_process_evaluate($evaluate), 'encrypt' => $encrypt,
+        'callback_param' => json_encode($callback_param), 'monitor' => $monitor, ];
 
         if (! is_null($callback)) {
             $request_data['callback_url'] = $callback;
@@ -315,6 +318,7 @@ class Client
      *         Otherwise, the requested version will be updated. If null, then the model’s default behavior
                will be executed. Default behaviour is controlled by the algorithm’s author.
      * @param string $file_content_type
+     * @param Boolean $monitor indicates if monitor the output results of the model or not
      * @return Task, since all processing fit algorithms always end up in queue.
      */
     public function trainAlgorithm(
@@ -322,18 +326,18 @@ class Client
         $data,
         $version = null,
         $export_new_version = null,
-        $file_content_type = "application/json"
-    )
-    {
+        $file_content_type = "application/json",
+        $monitor = true
+    ) {
         if (is_string($data)) {
             $request_files =
                     [
-                        'features' => curl_file_create($data, $file_content_type, 'featuers.json'),
+                        'features' => curl_file_create($data, $file_content_type, 'features.json'),
                     ];
         } else {
-            $request_files = ['features' => ['fileName' => 'featuers.json', 'fileContent' => json_encode($data)]];
+            $request_files = ['features' => ['fileName' => 'features.json', 'fileContent' => json_encode($data)]];
         }
-        $request_data = ['export_new_version' => $export_new_version];
+        $request_data = ['export_new_version' => $export_new_version, 'monitor' => $monitor];
     
         if (! is_null($version)) {
             $request_data['version'] = $version;

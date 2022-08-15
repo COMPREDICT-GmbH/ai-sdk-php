@@ -328,8 +328,7 @@ class Client
         $export_new_version = null,
         $file_content_type = "application/json",
         $monitor = true
-    )
-    {
+    ) {
         if (is_string($data)) {
             $request_files =
                     [
